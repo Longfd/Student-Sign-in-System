@@ -33,7 +33,7 @@ proguard/
 captures/
 
 # Android Studio idea
-idea/
+.idea/
 
 # Intellij
 *.iml
