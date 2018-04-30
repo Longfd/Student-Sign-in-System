@@ -24,7 +24,8 @@ constraint `fk_classid` foreign key(cls_no) references CLASS_TBL(cls_no)
 create table COURSE_TBL(
 course_no varchar(20) primary key, -- 课程号
 course_name varchar(20)  not null, -- 课程名
-t_id varchar(20) -- 教师号
+t_id varchar(20), -- 教师号
+constraint `fk_tid` foreign key(t_id) references TEACHER_TBL(t_id)
 );
 
 -- 5.选课表(学生扫码, 获取课程号并发送给后台, 
