@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="edit_style">
+        <item name="android:textColor">@color/txt_black</item>
+        <item name="android:textSize">@dimen/txt_m</item>
+    </style>
 </resources>
