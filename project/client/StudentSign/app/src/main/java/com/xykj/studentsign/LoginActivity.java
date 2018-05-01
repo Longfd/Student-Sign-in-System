@@ -1,5 +1,6 @@
 package com.xykj.studentsign;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -50,5 +51,9 @@ public class LoginActivity extends BaseActivity {
         mTilPwd.setError("");
 
 
+    }
+
+    public void register(View view) {
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 }

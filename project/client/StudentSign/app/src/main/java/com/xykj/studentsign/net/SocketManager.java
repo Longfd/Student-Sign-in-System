@@ -14,11 +14,21 @@ import java.util.concurrent.Executors;
 /**
  * 咸鱼科技 通信协议
  * <p>
- * 包头{
- * 请求包类型: 4 Bytes
- * 请求包长度: 4 Bytes	//INT型字节流约定 + 网络序
- * 请求包校验: 2 Bytes //
- * }
+ * https://github.com/Longfd/Student-Sign-in-System/blob/master/%E5%92%B8%E9%B1%BC%E7%A7%91%E6%8A%80%E6%8A%A5%E6%96%87%E8%A7%84%E8%8C%83.md
+ * <p>
+ * 报文格式: 包头 + 包体 + 包尾
+ * 包头:
+ * <p>
+ * 报文类型(INT):   4 Byte(网络序or大端序) 详见报文接口设计
+ * 报文长度(INT): 4 Byte(网络序or大端序) 包体长 + 2Byte(包尾校验字)
+ * 包头校验(SHORT): 2 Byte(网络序or大端序) [报文类型+报文长度] 单个字节累加之和
+ * 包体:
+ * <p>
+ * 请求包: 业务内容(JSON格式)//待定
+ * 返回包: 业务内容(JSON格式)//待定
+ * 包尾:
+ * <p>
+ * 包尾校验(SHORT): 2 Byte(网络序or大端序) [包体内容] 单个字节累加之和
  */
 
 public class SocketManager {
@@ -28,6 +38,7 @@ public class SocketManager {
     private static final int HEAD_TYPE_LENGTH = 4;
     private static final int HEAD_LEN_LENGTH = 4;
     private static final int HEAD_CHECK_LENGTH = 2;
+    private static final int END_CHECK = 2;
 
     private static final int DEFAULT_TIME_OUT = 10000;
 
@@ -137,28 +148,44 @@ public class SocketManager {
             byte[] headLen = subArray(head, HEAD_TYPE_LENGTH, HEAD_TYPE_LENGTH + HEAD_LEN_LENGTH);
             byte[] headCheck = subArray(head, HEAD_TYPE_LENGTH + HEAD_LEN_LENGTH, HEAD_LENGTH);
 
-            if (!equalByteArray(headCheck, getCheckByteArray(headType, headLen))) {
-                throw new RuntimeException("Data validation failure!  ---by XianYu Tech.");
+            if (headCheck == null || headType == null || headLen == null || !equalByteArray(headCheck, getCheckByteArray(headType, headLen))) {
+                throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
             }
 
+//            int dataTotalLen = byteArrayToInt(headLen);
+//            byte[] buffer = new byte[1024];
+//            int len;
+//            StringBuilder stringBuffer = new StringBuilder();
+//            while ((len = is.read(buffer)) > 0) {
+//                byte[] bytes = buffer;
+//                if (len < 1024) {
+//                    bytes = subArray(buffer, 0, len);
+//                }
+//                if (bytes != null) {
+//                    stringBuffer.append(new String(bytes, UTF_8));
+//                }
+//                dataTotalLen -= len;
+//                if (dataTotalLen <= 0) {
+//                    break;
+//                }
+//            }
+
             int dataTotalLen = byteArrayToInt(headLen);
-            byte[] buffer = new byte[1024];
-            int len;
-            StringBuilder stringBuffer = new StringBuilder();
-            while ((len = is.read(buffer)) > 0) {
-                byte[] bytes = buffer;
-                if (len < 1024) {
-                    bytes = subArray(buffer, 0, len);
-                }
-                if (bytes != null) {
-                    stringBuffer.append(new String(bytes, UTF_8));
-                }
-                dataTotalLen -= len;
-                if (dataTotalLen <= 0) {
-                    break;
-                }
+            byte[] buffer = new byte[dataTotalLen];
+
+            // TODO: 2018/5/2 循环读取 直到指定长度
+            int len = is.read(buffer);
+
+            if (len != dataTotalLen) {
+                throw new RuntimeException("Response data lost!  ---by XianYU Technology Co.,Ltd");
             }
-            handleSuccess(callback, stringBuffer.toString());
+            byte[] dataBytes = subArray(buffer, 0, dataTotalLen - END_CHECK);
+            byte[] endCheck = new byte[]{buffer[dataTotalLen - 2], buffer[dataTotalLen - 1]};
+            //check
+            if (dataBytes == null || !equalByteArray(endCheck, getEndCheckByteArray(dataBytes))) {
+                throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
+            }
+            handleSuccess(callback, new String(dataBytes, UTF_8));
             socket.close();
         } catch (Exception e) {
             handleFailed(callback, e);
@@ -207,24 +234,25 @@ public class SocketManager {
 
     /**
      * 咸鱼科技 socket 规范
-     * <p>
-     * 包头{
-     * 请求包类型: 4 Bytes
-     * 请求包长度: 4 Bytes	//INT型字节流约定 + 网络序
-     * 请求包校验: 2 Bytes //
-     * }
      *
      * @param type 接口类型
      * @param data 数据
      * @return byte数组
      */
     private byte[] getBytesByXianYu(int type, String data) throws Exception {
+        //报文类型(INT):   4 Byte(网络序or大端序) 详见报文接口设计
         byte[] headType = intToByteArray(type);
-        byte[] headLen = intToByteArray(data.getBytes().length);
+        //报文长度(INT): 4 Byte(网络序or大端序) 包体长 + 2Byte(包尾校验字)
+        byte[] headLen = intToByteArray(data.getBytes(UTF_8).length + END_CHECK);
+        //包头校验(SHORT): 2 Byte(网络序or大端序) [报文类型+报文长度] 单个字节累加之和
         byte[] headCheck = getCheckByteArray(headType, headLen);
+        //包体
         byte[] pkgData = data.getBytes(UTF_8);
-        return mergeArray(headType, headLen, headCheck, pkgData);
+        //包尾校验(SHORT): 2 Byte(网络序or大端序) [包体内容] 单个字节累加之和
+        byte[] end = getEndCheckByteArray(pkgData);
+        return mergeArray(headType, headLen, headCheck, pkgData, end);
     }
+
 
     private byte[] mergeArray(byte[]... array) {
 
@@ -262,6 +290,14 @@ public class SocketManager {
         return shortToByteArray(check);
     }
 
+    private byte[] getEndCheckByteArray(byte[] pkgData) {
+        short endCheck = 0;
+        for (byte b : pkgData) {
+            endCheck += b;
+        }
+        return shortToByteArray(endCheck);
+    }
+
     private byte[] intToByteArray(int a) {
         return new byte[]{
                 (byte) ((a >> 24) & 0xFF),
@@ -271,7 +307,7 @@ public class SocketManager {
         };
     }
 
-    public int byteArrayToInt(byte[] b) {
+    private int byteArrayToInt(byte[] b) {
         return b[3] & 0xFF |
                 (b[2] & 0xFF) << 8 |
                 (b[1] & 0xFF) << 16 |
