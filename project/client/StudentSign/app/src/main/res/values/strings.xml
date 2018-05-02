@@ -6,4 +6,10 @@
     <string name="radio_teacher">教师</string>
     <string name="hint_input_pwd">请输入密码</string>
     <string name="hint_input_pwd_sure">请确认密码</string>
+
+    <string name="network_error">网络错误!</string>
+    <string name="network_request">请求服务器中…</string>
+
+    <string name="user_holder">$1%s\n$2%s\n$3%s</string>
+
 </resources>

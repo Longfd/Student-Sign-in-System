@@ -7,6 +7,8 @@ public class Result {
     private String result;
     private String msg;
 
+
+
     public String getResult() {
         return result;
     }

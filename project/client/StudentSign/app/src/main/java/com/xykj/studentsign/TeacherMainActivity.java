@@ -2,7 +2,7 @@ package com.xykj.studentsign;
 
 import android.os.Bundle;
 
-public class MainActivity extends BaseActivity {
+public class TeacherMainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

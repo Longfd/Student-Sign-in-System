@@ -8,6 +8,9 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.xykj.studentsign.entity.UserInfo;
+import com.xykj.studentsign.net.Api;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -31,7 +34,6 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setTitle("登录");
-
     }
 
     public void login(View view) {
@@ -49,7 +51,29 @@ public class LoginActivity extends BaseActivity {
             return;
         }
         mTilPwd.setError("");
+        showProgress();
+        Api.getInstance(getApplicationContext()).login(mNo, mPwd, new Api.Callback<UserInfo>() {
+            @Override
+            public void OnSuccess(UserInfo data) {
+                closeProgress();
 
+                App.userId = data.getUserId();
+                App.userName = data.getUserName();
+                App.role = data.getRole();
+                App.userInfo = data;
+
+                showToast("登录成功!");
+                startActivity(new Intent(LoginActivity.this, TeacherMainActivity.class));
+                finish();
+            }
+
+            @Override
+            public void OnFailed(Exception e) {
+                closeProgress();
+                e.printStackTrace();
+                showNetError();
+            }
+        });
 
     }
 

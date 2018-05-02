@@ -2,6 +2,7 @@ package com.xykj.studentsign.net;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -152,35 +153,29 @@ public class SocketManager {
                 throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
             }
 
-//            int dataTotalLen = byteArrayToInt(headLen);
-//            byte[] buffer = new byte[1024];
-//            int len;
-//            StringBuilder stringBuffer = new StringBuilder();
-//            while ((len = is.read(buffer)) > 0) {
-//                byte[] bytes = buffer;
-//                if (len < 1024) {
-//                    bytes = subArray(buffer, 0, len);
-//                }
-//                if (bytes != null) {
-//                    stringBuffer.append(new String(bytes, UTF_8));
-//                }
-//                dataTotalLen -= len;
-//                if (dataTotalLen <= 0) {
-//                    break;
-//                }
-//            }
-
             int dataTotalLen = byteArrayToInt(headLen);
-            byte[] buffer = new byte[dataTotalLen];
+            byte[] totalDataByte = new byte[]{};
 
-            // TODO: 2018/5/2 循环读取 直到指定长度
-            int len = is.read(buffer);
+            byte[] buffer = new byte[1024];
 
-            if (len != dataTotalLen) {
-                throw new RuntimeException("Response data lost!  ---by XianYU Technology Co.,Ltd");
+            //循环读取 直到指定长度
+            int len = 0;
+            int readLen = 0;
+            for (; ; ) {
+                len = is.read(buffer);
+                if (len > 0) {
+                    merge(totalDataByte, subArray(buffer, 0, len));
+                    readLen += len;
+                }
+
+                if (readLen >= dataTotalLen) {
+                    break;
+                }
             }
-            byte[] dataBytes = subArray(buffer, 0, dataTotalLen - END_CHECK);
-            byte[] endCheck = new byte[]{buffer[dataTotalLen - 2], buffer[dataTotalLen - 1]};
+
+            byte[] dataBytes = subArray(totalDataByte, 0, dataTotalLen - END_CHECK);
+            byte[] endCheck = subArray(totalDataByte, dataTotalLen - END_CHECK, dataTotalLen);
+
             //check
             if (dataBytes == null || !equalByteArray(endCheck, getEndCheckByteArray(dataBytes))) {
                 throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
@@ -225,7 +220,7 @@ public class SocketManager {
     private byte[] subArray(byte[] bytes, int start, int end) {
         int len = end - start;
         if (len <= 0 || bytes.length < end) {
-            return null;
+            return bytes;
         }
         byte[] result = new byte[len];
         System.arraycopy(bytes, start, result, 0, len);

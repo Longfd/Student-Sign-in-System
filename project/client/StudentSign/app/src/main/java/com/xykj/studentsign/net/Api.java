@@ -8,6 +8,9 @@ import com.google.gson.JsonSyntaxException;
 import com.xykj.studentsign.entity.Result;
 import com.xykj.studentsign.entity.UserInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Api {
     private static final String TAG = "Api";
     private static Api sInstance;
@@ -21,6 +24,7 @@ public class Api {
     private static final int REQUEST_TYPE_ADD_CLASS = 1002;//创建班级
     private static final int REQUEST_TYPE_QUERY_CLASS = 1003; //查询班级
     private static final int REQUEST_TYPE_ADD_ACTIVITY = 1004;//创建活动
+    private Gson mGson;
 
 
     private Api(Context context) {
@@ -29,6 +33,7 @@ public class Api {
                 .setPort(port)
                 .setTimeOut(TIME_OUT)
                 .build();
+        mGson = new Gson();
     }
 
     public synchronized static Api getInstance(Context context) {
@@ -38,17 +43,22 @@ public class Api {
         return sInstance;
     }
 
+    /**
+     * 1.登录
+     *
+     * @param user     对象实例
+     * @param callback 结果回调
+     */
     public void register(UserInfo user, final Callback<Result> callback) {
-        Gson gson = new Gson();
-        String data = gson.toJson(user);
+
+        String data = mGson.toJson(user);
         Log.d(TAG, "register: " + data);
         mSocketManager.sendMsg(REQUEST_TYPE_REGISTER, data, new SocketManager.SocketCallback() {
             @Override
             public void OnSuccess(String content) {
                 Result result = null;
                 try {
-                    Gson gson = new Gson();
-                    result = gson.fromJson(content, Result.class);
+                    result = mGson.fromJson(content, Result.class);
                 } catch (JsonSyntaxException e) {
                     callback.OnFailed(e);
                 }
@@ -62,6 +72,34 @@ public class Api {
         });
     }
 
+
+    public void login(String userId, String pwd, final Callback<UserInfo> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", userId);
+        map.put("pwd", pwd);
+
+        String data = mGson.toJson(map);
+        Log.d(TAG, "login: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_LOGIN, data, new SocketManager.SocketCallback() {
+            @Override
+            public void OnSuccess(String content) {
+                UserInfo userInfo = null;
+                try {
+                    userInfo = mGson.fromJson(content, UserInfo.class);
+                } catch (JsonSyntaxException e) {
+                    callback.OnFailed(e);
+                }
+                callback.OnSuccess(userInfo);
+            }
+
+            @Override
+            public void OnFailed(Exception e) {
+                callback.OnFailed(e);
+            }
+        });
+
+
+    }
 
     public interface Callback<T> {
 
