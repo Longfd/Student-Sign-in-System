@@ -41,7 +41,6 @@ constraint `fk_ATCTid` foreign key(t_id) references TEACHER_TBL(t_id)
 -- 由教师创建活动时, 插入表数据
 -- 学生扫码, 根据(学号+活动号) 更新签到状态
 create table SINGIN_TBL(
-sign_id  INT UNSIGNED AUTO_INCREMENT primary key , -- 签到号
 act_no INT UNSIGNED, -- 活动号
 act_name varchar(20), -- 活动名
 s_id varchar(20) not null, -- 学号
@@ -51,6 +50,7 @@ cls_name varchar(20) not null, -- 名称
 sign_date varchar(15), -- 日期
 sign_time varchar(15), -- 时间
 sign_status INT, -- 签到状态(0-未签到, 1-已签到)
+primary key(act_no, s_id),
 constraint `fk_SIGNActivityNo` foreign key(act_no) references ACTIVITY_TBL(act_no),
 constraint `fk_SIGNStudentId` foreign key(s_id) references STUDENT_TBL(s_id),
 constraint `fk_SIGNClassid` foreign key(cls_no) references CLASS_TBL(cls_no)
