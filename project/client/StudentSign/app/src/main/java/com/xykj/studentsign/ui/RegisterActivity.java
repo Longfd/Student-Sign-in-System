@@ -1,4 +1,4 @@
-package com.xykj.studentsign;
+package com.xykj.studentsign.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,9 +9,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.xykj.studentsign.R;
 import com.xykj.studentsign.entity.Result;
 import com.xykj.studentsign.entity.UserInfo;
 import com.xykj.studentsign.net.Api;
+import com.xykj.studentsign.ui.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

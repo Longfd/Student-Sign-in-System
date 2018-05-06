@@ -1,15 +1,19 @@
-package com.xykj.studentsign;
+package com.xykj.studentsign.ui.base;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.xykj.studentsign.R;
+
 public abstract class BaseActivity extends AppCompatActivity {
-
-
+    protected String TAG = getClass().getSimpleName();
+    public static final String RESULT_REFRESH = "refresh";
+    public static final int REQUEST_CODE = 1001;
     private Toast mToast;
     private ProgressDialog mProgressDialog;
 
@@ -23,7 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void showProgress() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setTitle(R.string.network_request);
+            mProgressDialog.setMessage(getResources().getString(R.string.network_request));
         }
         mProgressDialog.show();
     }
@@ -49,5 +53,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         mToast.setText(content);
         mToast.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && data != null) {
+            boolean refresh = data.getBooleanExtra(RESULT_REFRESH, false);
+            if (refresh) {
+                refresh();
+            }
+        }
+    }
+
+    protected void refresh() {
+
     }
 }

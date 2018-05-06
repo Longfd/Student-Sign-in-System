@@ -1,4 +1,4 @@
-package com.xykj.studentsign;
+package com.xykj.studentsign.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,11 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.xykj.studentsign.App;
+import com.xykj.studentsign.R;
 import com.xykj.studentsign.entity.UserInfo;
 import com.xykj.studentsign.net.Api;
+import com.xykj.studentsign.ui.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
