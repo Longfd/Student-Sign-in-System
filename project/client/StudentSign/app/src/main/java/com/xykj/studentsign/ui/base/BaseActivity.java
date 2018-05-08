@@ -3,11 +3,17 @@ package com.xykj.studentsign.ui.base;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.xykj.studentsign.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -69,5 +75,16 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void refresh() {
 
+    }
+
+    protected void showQrCode(String content) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        ImageView imageView = new ImageView(this);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(500, 500);
+        imageView.setLayoutParams(params);
+        Bitmap bitmap = CodeUtils.createImage(content, 400, 400,
+                BitmapFactory.decodeResource(getResources(), 0));
+        imageView.setImageBitmap(bitmap);
+        builder.setView(imageView).show();
     }
 }

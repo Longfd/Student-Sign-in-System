@@ -47,6 +47,17 @@ public abstract class SimpleRvAdapter<T> extends RecyclerView.Adapter<RecyclerVi
                 getItemClick(t, holder.getAdapterPosition());
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return getLongClick(t, holder.getAdapterPosition());
+            }
+        });
+    }
+
+    protected boolean getLongClick(T t, int adapterPosition) {
+        return false;
     }
 
     protected void bindItem(SimpleViewHolder holder, T t) {

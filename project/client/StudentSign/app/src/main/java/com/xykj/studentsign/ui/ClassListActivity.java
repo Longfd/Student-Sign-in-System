@@ -57,6 +57,12 @@ public class ClassListActivity extends BaseActivity {
             }
 
             @Override
+            protected boolean getLongClick(ClassInfo item, int adapterPosition) {
+                showQrCode(item.getId());
+                return true;
+            }
+
+            @Override
             public String getItemName(ClassInfo item) {
                 return item.getClassName();
             }

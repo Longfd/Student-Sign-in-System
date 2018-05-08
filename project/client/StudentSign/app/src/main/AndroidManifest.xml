@@ -3,6 +3,8 @@
           package="com.xykj.studentsign">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".App"
@@ -13,11 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN"/>-->
+            <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
         </activity>
 
         <activity android:name=".ui.TeacherMainActivity">
@@ -30,11 +31,25 @@
         <activity android:name=".ui.ClassListActivity"
             />
 
-        <activity android:name=".ui.StudentListActivity"/>
+        <activity android:name=".ui.StudentListActivity"
+            />
 
-        <activity android:name=".ui.ActiveListActivity"/>
-        <activity android:name=".ui.CreateActiveActivity"/>
-        <activity android:name=".ui.SignListActivity"/>
+        <activity android:name=".ui.ActiveListActivity"
+            />
+
+        <activity android:name=".ui.CreateActiveActivity"
+            />
+
+        <activity android:name=".ui.SignListActivity"
+            />
+
+        <activity android:name=".ui.StudentMainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
     </application>
 

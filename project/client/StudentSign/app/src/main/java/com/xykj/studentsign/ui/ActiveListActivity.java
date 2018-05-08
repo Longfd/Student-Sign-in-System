@@ -54,6 +54,12 @@ public class ActiveListActivity extends BaseActivity {
             }
 
             @Override
+            protected boolean getLongClick(ActiveInfo activeInfo, int adapterPosition) {
+                showQrCode(activeInfo.getId());
+                return true;
+            }
+
+            @Override
             public String getItemName(ActiveInfo item) {
                 return item.getName();
             }
