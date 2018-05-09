@@ -32,4 +32,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     implementation 'com.google.code.gson:gson:2.8.3'
+
+    implementation 'cn.yipianfengye.android:zxing-library:2.2'
 }

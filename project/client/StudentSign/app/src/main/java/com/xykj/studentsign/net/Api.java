@@ -25,6 +25,7 @@ public class Api {
     private static final int REQUEST_TYPE_ADD_CLASS = 1002;//创建班级
     private static final int REQUEST_TYPE_QUERY_CLASS = 1003; //查询班级
     private static final int REQUEST_TYPE_ADD_ACTIVITY = 1004;//创建活动
+    private static final int REQUEST_TYPE_QUERY_ACTIVITY = 1005;//查询活动
     private Gson mGson;
 
 
@@ -50,7 +51,7 @@ public class Api {
      * @param user     对象实例
      * @param callback 结果回调
      */
-    public void register(UserInfo user, final Callback<Result> callback) {
+    public void register(UserInfo user, Callback<Result> callback) {
 
         String data = mGson.toJson(user);
         Log.d(TAG, "register: " + data);
@@ -64,7 +65,7 @@ public class Api {
      * @param pwd      pwd
      * @param callback callback
      */
-    public void login(String userId, String pwd, final Callback<UserInfo> callback) {
+    public void login(String userId, String pwd, Callback<UserInfo> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", userId);
         map.put("pwd", pwd);
@@ -79,7 +80,7 @@ public class Api {
      *
      * @param className 班级名
      */
-    public void createClass(String className, final Callback<Result> callback) {
+    public void createClass(String className, Callback<Result> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", App.userId);
         map.put("cls_name", className);
@@ -91,14 +92,36 @@ public class Api {
     }
 
     /**
-     * 创建班级
+     * 班级列表
      */
-    public void getClassList(final Callback<Result> callback) {
+    public void getClassList(Callback<Result> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", App.userId);
         String data = mGson.toJson(map);
         Log.d(TAG, "getClassList: " + data);
         mSocketManager.sendMsg(REQUEST_TYPE_QUERY_CLASS, data, new ResultCallback<>(callback, Result.class));
+    }
+
+    public void createActive(String activityName, String cls, Callback<Result> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", App.userId);
+        map.put("activityName", activityName);
+        map.put("classList", cls);
+        String data = mGson.toJson(map);
+        Log.d(TAG, "createActive: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_ADD_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+    }
+
+    public void getActiveList(Callback<Result> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", App.userId);
+        String data = mGson.toJson(map);
+        Log.d(TAG, "getClassList: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+    }
+
+    public void getSignList(String activeId, Callback<Result> callback) {
+
     }
 
     class ResultCallback<T> implements SocketManager.SocketCallback {

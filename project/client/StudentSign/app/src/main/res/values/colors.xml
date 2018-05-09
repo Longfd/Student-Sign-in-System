@@ -7,5 +7,6 @@
     <color name="txt_black">#666666</color>
     <color name="txt_gray">#aaaaaa</color>
     <color name="txt_white">#ffffff</color>
+    <color name="txt_red">#ff2626</color>
 
 </resources>

@@ -10,6 +10,8 @@ public class Result {
     private String msg;
 
     private List<ClassInfo> classInfo;
+    private List<ActiveInfo> activityInfo;
+    private List<UserInfo> signInfo;
 
     public String getResult() {
         return result;
@@ -33,5 +35,21 @@ public class Result {
 
     public void setClassInfo(List<ClassInfo> classInfo) {
         this.classInfo = classInfo;
+    }
+
+    public List<ActiveInfo> getActivityInfo() {
+        return activityInfo;
+    }
+
+    public void setActivityInfo(List<ActiveInfo> activityInfo) {
+        this.activityInfo = activityInfo;
+    }
+
+    public List<UserInfo> getSignInfo() {
+        return signInfo;
+    }
+
+    public void setSignInfo(List<UserInfo> signInfo) {
+        this.signInfo = signInfo;
     }
 }

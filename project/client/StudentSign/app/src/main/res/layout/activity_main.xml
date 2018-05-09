@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.xykj.studentsign.TeacherMainActivity">
+    tools:context="com.xykj.studentsign.ui.TeacherMainActivity">
 
     <TextView
         android:id="@+id/tv_info"
@@ -17,25 +17,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="createClass"
-        android:text="创建班级"/>
+        android:onClick="myClass"
+        android:text="我的班级"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="classList"
-        android:text="班级列表"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="createClass"
-        android:text="创建活动"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="activityList"
-        android:text="活动列表"/>
+        android:onClick="myActivity"
+        android:text="我的活动"/>
 
 </LinearLayout>

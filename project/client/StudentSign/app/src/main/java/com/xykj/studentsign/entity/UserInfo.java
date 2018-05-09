@@ -22,6 +22,9 @@ public class UserInfo implements Serializable {
     private String className;//班级名称
     private String id;//班级创建人
 
+    private String signState;//签到状态
+
+
     public UserInfo(String userName, String userId, String role, String pwd) {
         this.userName = userName;
         this.userId = userId;
@@ -99,5 +102,14 @@ public class UserInfo implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+
+    public String getSignState() {
+        return signState;
+    }
+
+    public void setSignState(String signState) {
+        this.signState = signState;
     }
 }

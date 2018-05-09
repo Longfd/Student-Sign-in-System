@@ -1,21 +1,34 @@
-package com.xykj.studentsign;
+package com.xykj.studentsign.ui;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
+import com.xykj.studentsign.App;
+import com.xykj.studentsign.R;
 import com.xykj.studentsign.entity.UserInfo;
 import com.xykj.studentsign.net.Api;
+import com.xykj.studentsign.ui.base.BaseActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends BaseActivity {
+import static com.xykj.studentsign.entity.UserInfo.ROLE_STUDENT;
 
+public class LoginActivity extends BaseActivity {
+    public static final int PERMISSION_REQUEST_CODE = 0xab;
     @BindView(R.id.tie_no)
     TextInputEditText mTieNo;
     @BindView(R.id.til_no)
@@ -34,6 +47,7 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setTitle("登录");
+        request();
     }
 
     public void login(View view) {
@@ -63,7 +77,11 @@ public class LoginActivity extends BaseActivity {
                 App.userInfo = data;
 
                 showToast("登录成功!");
-                startActivity(new Intent(LoginActivity.this, TeacherMainActivity.class));
+                Class cls = TeacherMainActivity.class;
+                if (ROLE_STUDENT.equals(App.role)) {
+                    cls = StudentMainActivity.class;
+                }
+                startActivity(new Intent(LoginActivity.this, cls));
                 finish();
             }
 
@@ -79,5 +97,33 @@ public class LoginActivity extends BaseActivity {
 
     public void register(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
+    }
+
+    private void request() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            List<String> pList = new ArrayList<>();
+            for (String permission : App.permissions) {
+                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    pList.add(permission);
+                }
+            }
+            String[] pArray = pList.toArray(new String[]{});
+            if (pArray.length <= 0) {
+                return;
+            }
+            ActivityCompat.requestPermissions(this, pArray, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int result : grantResults) {
+            Log.d(TAG, "grantResults: " + result);
+            if (result == -1) {
+                finish();
+                break;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

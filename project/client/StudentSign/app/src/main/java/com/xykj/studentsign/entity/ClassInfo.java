@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class ClassInfo implements Serializable {
     @SerializedName("cls_no")
@@ -46,6 +47,17 @@ public class ClassInfo implements Serializable {
         this.students = students;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClassInfo classInfo = (ClassInfo) o;
+        return Objects.equals(id, classInfo.id);
+    }
 
+    @Override
+    public int hashCode() {
 
+        return Objects.hash(id);
+    }
 }

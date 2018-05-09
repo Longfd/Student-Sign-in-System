@@ -1,4 +1,4 @@
-package com.xykj.studentsign;
+package com.xykj.studentsign.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,12 +9,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.xykj.studentsign.R;
+import com.xykj.studentsign.adapter.SimpleRvAdapter;
 import com.xykj.studentsign.entity.ClassInfo;
 import com.xykj.studentsign.entity.Result;
 import com.xykj.studentsign.net.Api;
+import com.xykj.studentsign.ui.base.BaseActivity;
 import com.xykj.studentsign.weiget.CreateClassDialog;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.xykj.studentsign.StudentListActivity.DATA_CLASS_INFO;
+import static com.xykj.studentsign.ui.StudentListActivity.DATA_CLASS_INFO;
 
 public class ClassListActivity extends BaseActivity {
 
@@ -34,8 +35,8 @@ public class ClassListActivity extends BaseActivity {
     List<ClassInfo> mClassInfos;
     @BindView(R.id.srl_refresh)
     SwipeRefreshLayout mSrlRefresh;
-    private ClassAdapter mAdapter;
     private Api mApi;
+    private SimpleRvAdapter<ClassInfo> mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +48,25 @@ public class ClassListActivity extends BaseActivity {
         mRvClassList.setLayoutManager(new LinearLayoutManager(this));
         mRvClassList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mClassInfos = new ArrayList<>();
-        mAdapter = new ClassAdapter();
+        mAdapter = new SimpleRvAdapter<ClassInfo>(this) {
+            @Override
+            protected void getItemClick(ClassInfo item, int adapterPosition) {
+                Intent intent = new Intent(ClassListActivity.this, StudentListActivity.class);
+                intent.putExtra(DATA_CLASS_INFO, item);
+                startActivity(intent);
+            }
+
+            @Override
+            protected boolean getLongClick(ClassInfo item, int adapterPosition) {
+                showQrCode(item.getId());
+                return true;
+            }
+
+            @Override
+            public String getItemName(ClassInfo item) {
+                return item.getClassName();
+            }
+        };
         mRvClassList.setAdapter(mAdapter);
 
         mSrlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -73,7 +92,7 @@ public class ClassListActivity extends BaseActivity {
         mApi.getClassList(new Api.Callback<Result>() {
             @Override
             public void OnSuccess(Result data) {
-                closeProgress();
+                mSrlRefresh.setRefreshing(false);
                 if (Result.RESULT_SUCCESS.equals(data.getResult())) {
                     List<ClassInfo> classInfo = data.getClassInfo();
 
@@ -81,7 +100,7 @@ public class ClassListActivity extends BaseActivity {
 
                         mClassInfos.clear();
                         mClassInfos.addAll(classInfo);
-                        mAdapter.notifyDataSetChanged();
+                        mAdapter.setData(mClassInfos);
                     } else {
                         showToast("暂无数据!");
                     }
@@ -92,6 +111,7 @@ public class ClassListActivity extends BaseActivity {
 
             @Override
             public void OnFailed(Exception e) {
+                mSrlRefresh.setRefreshing(false);
                 showNetError();
             }
         });
@@ -133,37 +153,37 @@ public class ClassListActivity extends BaseActivity {
         });
     }
 
-    class ClassAdapter extends RecyclerView.Adapter<ViewHolder> {
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = getLayoutInflater().inflate(R.layout.item_class, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            ClassInfo classInfo = mClassInfos.get(position);
-            holder.name.setText(classInfo.getClassName());
-            Intent intent = new Intent(ClassListActivity.this, StudentListActivity.class);
-            intent.putExtra(DATA_CLASS_INFO, classInfo);
-            startActivity(intent);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mClassInfos.size();
-        }
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView name;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            name = itemView.findViewById(R.id.tv_name);
-        }
-    }
+//    class ClassAdapter extends RecyclerView.Adapter<ViewHolder> {
+//
+//        @Override
+//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//            View view = getLayoutInflater().inflate(R.layout.item_class, parent, false);
+//            return new ViewHolder(view);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(ViewHolder holder, int position) {
+//            ClassInfo classInfo = mClassInfos.get(position);
+//            holder.name.setText(classInfo.getClassName());
+//            Intent intent = new Intent(ClassListActivity.this, StudentListActivity.class);
+//            intent.putExtra(DATA_CLASS_INFO, classInfo);
+//            startActivity(intent);
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return mClassInfos.size();
+//        }
+//    }
+//
+//    class ViewHolder extends RecyclerView.ViewHolder {
+//
+//        TextView name;
+//
+//        public ViewHolder(View itemView) {
+//            super(itemView);
+//
+//            name = itemView.findViewById(R.id.tv_name);
+//        }
+//    }
 }
