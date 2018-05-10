@@ -1,12 +1,27 @@
 一.注册
-{"userId":"00001" ,"userName":"教师","role":"1","pwd":"123456"} 
-{"userId":"00001" ,"userName":"学生","role":"0","pwd":"123456"}  
+{"userId":"00001" ,"userName":"教师1","role":"1","pwd":"123456"} 
+{"userId":"00002" ,"userName":"教师2","role":"1","pwd":"123456"} 
+{"userId":"00001" ,"userName":"学生1","role":"0","pwd":"123456"}
+{"userId":"00002" ,"userName":"学生2","role":"0","pwd":"123456"}  
+{"userId":"00003" ,"userName":"学生3","role":"0","pwd":"123456"} 
 INSERT INTO TEACHER_TBL(t_id,t_name,t_passwd) VALUES('00001','张三','123456');
 
 二.登录
-{"userId":"00001" ,"userName":"教师","role":"1","pwd":"123456"}
-{"userId":"00001" ,"userName":"学生","role":"0","pwd":"123456"}
+{"userId":"00002" ,"userName":"教师1","role":"1","pwd":"123456"}
+{"userId":"00001" ,"userName":"学生1","role":"0","pwd":"123456"}
 
 三.添加班级
-{"cls_name":"信管" ,"userId":"00001"}  
-INSERT INTO CLASS_TBL(cls_name,t_id) VALUES('信管', '00001')
+{"cls_name":"信管11-01" ,"userId":"00001"}
+{"cls_name":"信管11-02" ,"userId":"00001"}
+{"cls_name":"信管11-03" ,"userId":"00001"}
+
+四.加入班级
+{"userId":"00001" ,"cls_no":"1"}
+{"userId":"00002" ,"cls_no":"1"}
+{"userId":"00003" ,"cls_no":"2"}
+UPDATE STUDENT_TBL SET cls_no = 2, cls_name = '信管11-02' WHERE s_id = '00003';
+
+五.查询班级
+{"userId":"00001"}
+SELECT * FROM CLASS_TBL WHERE t_id = '00001';
+SELECT * FROM STUDENT_TBL WHERE cls_no in(1 , 2);

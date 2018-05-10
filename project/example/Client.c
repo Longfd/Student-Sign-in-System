@@ -10,7 +10,7 @@
 #include "packet.h"
 
 #define BUF_SIZE 8192
-#define PACK_TYPE 1002
+#define PACK_TYPE 1003
 #define IP "127.0.0.1"
 #define PORT 7000
 
