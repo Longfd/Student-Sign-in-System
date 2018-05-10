@@ -121,7 +121,31 @@ public class Api {
     }
 
     public void getSignList(String activeId, Callback<Result> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", App.userId);
+        map.put("activeId", activeId);
+        String data = mGson.toJson(map);
+        Log.d(TAG, "getClassList: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+    }
 
+    public void getJoinClass(String classId, Callback<Result> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", App.userId);
+        map.put("classId", classId);
+        String data = mGson.toJson(map);
+        Log.d(TAG, "getClassList: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+    }
+
+
+    public void getSignActive(String activeId, Callback<Result> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", App.userId);
+        map.put("activeId", activeId);
+        String data = mGson.toJson(map);
+        Log.d(TAG, "getClassList: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
     }
 
     class ResultCallback<T> implements SocketManager.SocketCallback {
