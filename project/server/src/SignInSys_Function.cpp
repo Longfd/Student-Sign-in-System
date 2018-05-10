@@ -191,7 +191,6 @@ int queryPerson(person& person, std::string& err)
 		free_conn(conn_no);
 		return -4;
 	}
-	write_debug_log("In Func[%s] : mysql_refresh() ok !", funcName);
 
 	iRet = mysql_query(mysql_conn, sql_stmt.str().c_str());
 	if (0 != iRet){
@@ -205,7 +204,6 @@ int queryPerson(person& person, std::string& err)
 		free_conn(conn_no);
 		return -5;
 	}
-	write_debug_log("In Func[%s] : mysql_query() ok !", funcName);
 
 	MYSQL_RES* result = mysql_store_result(mysql_conn);
 	int iCount = mysql_num_rows(result);
@@ -215,7 +213,6 @@ int queryPerson(person& person, std::string& err)
 		free_conn(conn_no);
 		return -6;
 	}
-	write_debug_log("In Func[%s] : mysql_num_rows() ok !", funcName);
 
 	MYSQL_ROW row = NULL;
 	row = mysql_fetch_row(result);
@@ -223,7 +220,7 @@ int queryPerson(person& person, std::string& err)
 	{
 		if (0 == person.pwd.compare(row[2]))
 		{
-			write_debug_log("In Func[%s] : 用户验证通过! Role[%s], row[4]:%s", funcName, person.role.c_str(), row[4]);
+			write_debug_log("In Func[%s] : 用户验证通过! Role[%s]", funcName, person.role.c_str());
 			if (0 == person.role.compare("0") && NULL != row[4])
 			{
 				write_debug_log("In Func[%s] : 添加学生信息! row3[%d], row4[%s]", funcName, person.role.c_str(), row[3], row[4]);
@@ -234,7 +231,6 @@ int queryPerson(person& person, std::string& err)
 			}
 			free_conn(conn_no);
 			mysql_free_result(result);
-			write_debug_log("In Func[%s] : Return 0", funcName);
 			return 0;
 		}
 	}
@@ -276,7 +272,6 @@ int userSignUp(CommThreadInfo* thread_info, unsigned char* data)
 			write_debug_log("In Func[%s] : queryPerson() iRet:%d, str_err:%s", funcName, iRet, str_err.c_str());
 		}
 		else{
-			write_debug_log("In Func[%s] :组装JSON!", funcName);
 			jret[RESPON_CODE] = "0";
 			jret[RESPON_MSG] = "success";
 			jret[PERSON_ID] = person.userId.c_str();
