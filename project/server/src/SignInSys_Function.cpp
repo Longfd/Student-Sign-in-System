@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <map>
 
 #include "SignInSys_Function.h"
 #include "SignInSys_db.h"
@@ -15,8 +16,7 @@
 extern int g_conn_count;
 extern OraConn* g_conn_list;
 
-
-
+using json = nlohmann::json;
 
 
 //1.用户注册 Begin
@@ -64,6 +64,14 @@ int insertTeachOrStu(int conn_no, const person& person, std::string& err)
 int insertPerson(const person& person, std::string& err)
 {
 	const char* funcName = "insertPerson";
+
+	if (0 == person.userId.size() || 0 == person.pwd.size() ||
+		0 == person.role.size() || 0 == person.userName.size()) {
+		err = std::string("无效数据");
+		write_debug_log("In Func[%s] 参数检查不通过!", funcName);
+		return ERRNO_ILLEGAL_PARAM;
+	}
+		
 
 	int conn_no = get_free_conn();
 	if (conn_no < 0){
@@ -151,6 +159,12 @@ int queryPerson(person& person, std::string& err)
 	char errbuf[SQL_ERR_BUF_SIZE];
 	int error_no;
 	const char* funcName = "queryPerson";
+
+	if (0 == person.userId.size() || 0 == person.pwd.size() || 0 == person.role.size()) {
+		err = std::string("无效数据");
+		write_debug_log("In Func[%s] 参数检查不通过!", funcName);
+		return ERRNO_ILLEGAL_PARAM;
+	}
 
 	int conn_no = get_free_conn();
 	if (conn_no < 0){
@@ -315,7 +329,11 @@ int insertClsSqlOpt(int conn_no, const classInfo& cls, std::string& err)
 	int error_no;
 	const char* funcName = "insertClsSqlOpt";
 
-	if (NULL == g_conn_list || conn_no < 0 || conn_no >= g_conn_count)	return -1;
+	if (NULL == g_conn_list || conn_no < 0 || conn_no >= g_conn_count) {
+		err = std::string("无效数据");
+		write_debug_log("In Func[%s] 参数检查不通过!", funcName);
+		return ERRNO_ILLEGAL_PARAM;
+	}
 
 	sql_stmt << "INSERT INTO CLASS_TBL(cls_name,t_id) VALUES('";
 
@@ -340,6 +358,12 @@ int insertClsSqlOpt(int conn_no, const classInfo& cls, std::string& err)
 int insertCls(const classInfo& cls, std::string& err)
 {
 	const char* funcName = "insertCls";
+
+	if (0 == cls.t_id.size() || 0 == cls.clsName.size())  {
+		err = std::string("无效数据");
+		write_debug_log("In Func[%s] 参数检查不通过!", funcName);
+		return ERRNO_ILLEGAL_PARAM;
+	}
 
 	int conn_no = get_free_conn();
 	if (conn_no < 0){
@@ -478,6 +502,12 @@ int updateStudent(const stuAndClsMap& mapInfo, std::string& err)
 {
 	const char* funcName = "updateStudent";
 
+	if (0 == mapInfo.cls_no.size() || 0 == mapInfo.s_id.size())  {
+		err = std::string("无效数据");
+		write_debug_log("In Func[%s] 参数检查不通过!", funcName);
+		return ERRNO_ILLEGAL_PARAM;
+	}
+
 	int conn_no = get_free_conn();
 	if (conn_no < 0){
 		err = std::string("无可用连接");
@@ -553,3 +583,214 @@ int joinClassRequest(CommThreadInfo* thread_info, unsigned char* data)
 	return iRet;
 }
 //4.加入班级 End
+
+//5.查询班级 Begin
+int queryClassInfoSqlOpt(const std::string& t_id, json& classInfoArray, std::string& err)
+{
+	int iRet;
+	std::ostringstream sql_stmt;
+	char errbuf[SQL_ERR_BUF_SIZE];
+	int error_no;
+	const char* funcName = "queryClassInfoSqlOpt";
+
+	if (0 == t_id.size()) {
+		err = std::string("无效数据");
+		write_debug_log("In Func[%s] 参数检查不通过!", funcName);
+		return ERRNO_ILLEGAL_PARAM;
+	}
+
+	int conn_no = get_free_conn();
+	if (conn_no < 0 || NULL == g_conn_list || conn_no >= g_conn_count){
+		err = std::string("无可用连接");
+		write_debug_log("In Func[%s] : get_free_conn() fail", funcName);
+		return -1;
+	}
+
+	MYSQL* mysql_conn = g_conn_list[conn_no].dbc_p;
+	iRet = mysql_refresh(mysql_conn, REFRESH_TABLES);
+	if (0 != iRet){
+		get_conn_error(&g_conn_list[conn_no], &error_no, errbuf, SQL_ERR_BUF_SIZE);
+		if (2006 == error_no){
+			write_debug_log("In Func[%s] : mysql_refresh() fail ! 数据库连接中断，重新启动服务!", funcName);
+			exit(error_no);
+		}
+		write_debug_log("In Func[%s] : mysql_refresh() fail ! 错误码:%d, 详细信息:%s", funcName, error_no, errbuf);
+		err = std::string(errbuf);
+		free_conn(conn_no);
+		return -2;
+	}
+
+	sql_stmt << "SELECT * FROM CLASS_TBL WHERE t_id = '" << t_id << "';";
+	write_debug_log("In Func[%s] : SQL:%s", funcName, sql_stmt.str().c_str());
+
+	iRet = mysql_query(mysql_conn, sql_stmt.str().c_str());
+	if (0 != iRet){
+		get_conn_error(&g_conn_list[conn_no], &error_no, errbuf, SQL_ERR_BUF_SIZE);
+		if (2006 == error_no){
+			write_debug_log("In Func[%s] : mysql_query() fail ! 数据库连接中断，重新启动服务!", funcName);
+			exit(error_no);
+		}
+		write_debug_log("In Func[%s] : mysql_query() fail ! 错误码:%d, 详细信息:%s", funcName, error_no, errbuf);
+		err = std::string(errbuf);
+		free_conn(conn_no);
+		return -3;
+	}
+
+	MYSQL_RES* result = mysql_store_result(mysql_conn);
+	int iCount = mysql_num_rows(result);
+	MYSQL_ROW row = mysql_fetch_row(result);
+	if (NULL == result || iCount <= 0 || NULL == row){
+		write_debug_log("In Func[%s] : mysql_num_rows() fail ! iCount:%d, 用户不存在!", funcName, iCount);
+		err = std::string("用户不存在!");
+		free_conn(conn_no);
+		return -4;
+	}
+
+	sql_stmt.str("");
+	sql_stmt << "SELECT * FROM STUDENT_TBL WHERE cls_no in(";
+
+	//存储班级信息 并准备下个查询语句
+	std::vector<classWithStu> clsInfos_;
+	std::map<std::string, std::string> cls_;
+	for (int i = 0; i < iCount; ++i){
+		classWithStu clsInfo;
+		std::ostringstream itoa;
+		itoa << row[0];
+		clsInfo.cls_no = itoa.str();
+		clsInfo.cls_name = row[1];
+		clsInfos_.push_back(clsInfo);
+		sql_stmt << itoa.str() << ",";
+		row = mysql_fetch_row(result);
+	}
+	write_debug_log("In Func[%s] : 班级数据加载成功! 班级数:%d", funcName, iCount);
+	mysql_free_result(result);
+
+	size_t delPos = sql_stmt.str().rfind(',');
+	write_debug_log("In Func[%s] : delPos:%d, SQL:%s", funcName, delPos, sql_stmt.str().c_str());
+	sql_stmt.str().erase(delPos);
+	sql_stmt << ");";
+	write_debug_log("In Func[%s] : SQL:%s", funcName, sql_stmt.str().c_str());
+
+	//查询学生
+	iRet = mysql_query(mysql_conn, sql_stmt.str().c_str());
+	if (0 != iRet){
+		get_conn_error(&g_conn_list[conn_no], &error_no, errbuf, SQL_ERR_BUF_SIZE);
+		if (2006 == error_no){
+			write_debug_log("In Func[%s] : mysql_query() fail ! 数据库连接中断，重新启动服务!", funcName);
+			exit(error_no);
+		}
+		write_debug_log("In Func[%s] : mysql_query() fail ! 错误码:%d, 详细信息:%s", funcName, error_no, errbuf);
+		err = std::string(errbuf);
+		free_conn(conn_no);
+		return -5;
+	}
+	result = mysql_store_result(mysql_conn);
+	iCount = mysql_num_rows(result);
+	row = mysql_fetch_row(result);
+	if (NULL == result || iCount <= 0 || NULL == row){
+		write_debug_log("In Func[%s] : mysql_num_rows() fail ! iCount:%d, 用户不存在!", funcName, iCount);
+		err = std::string("未查找到学生!");
+		free_conn(conn_no);
+		return -6;
+	}
+
+	//读取学生信息
+	std::vector<student> students_;
+	for (int i = 0; i < iCount; ++i){
+		student stu;
+		std::ostringstream itoa;
+		itoa << row[3];
+		stu.userId = row[0];
+		stu.userName = row[1];
+		stu.cls_no = itoa.str();
+		row = mysql_fetch_row(result);
+	}
+	write_debug_log("In Func[%s] : 学生数据加载成功! 学生数:%d", funcName, iCount);
+
+	//组装JSON  
+	try{
+		for (auto cls : clsInfos_){
+			json j_cls;
+			json stuArray;
+			for (auto it : students_){
+				if (it.cls_no == cls.cls_no){
+					json stu;
+					it.to_json(stu);
+					stuArray.push_back(stu);
+				}
+			}
+			j_cls[CLS_NAME] = cls.cls_name.c_str();
+			j_cls[CLS_ID] = cls.cls_no.c_str();
+			j_cls["students"] = json::parse(stuArray.dump().c_str());
+			classInfoArray.push_back(j_cls);
+		}
+	}
+	catch (...){
+		write_debug_log("In Func[%s] : JSON组装异常", funcName);
+		err = std::string("JSON组装异常!");
+		free_conn(conn_no);
+		return -6;
+	}
+
+	free_conn(conn_no);
+	return 0;
+}
+
+int queryClassInfo(CommThreadInfo* thread_info, unsigned char* data)
+{
+	int iRet;
+	json jret;
+	json clsInfoArray;
+	std::string str_data((char*)data);
+	std::string t_id;
+	std::string str_ret;
+	std::ostringstream oss_debug;
+	const char* funcName = "queryClassInfo";
+
+	write_debug_log("In Func[%s] : 接收到加入班级请求报文, 包体内容:%s", funcName, data);
+
+	try{
+		// parse json
+		json j1 = json::parse(str_data);
+		t_id = j1.at(PERSON_ID).get<std::string>();
+		oss_debug << "t_id:" << t_id << '\n';
+		write_debug_log("In Func[%s] : Json 解析成功:%s", funcName, oss_debug.str().c_str());
+
+		// dispose data
+		std::string str_err;
+		iRet = queryClassInfoSqlOpt(t_id, clsInfoArray, str_err);
+		if (0 != iRet){
+			jret["result"] = "1";
+			jret["msg"] = str_err.c_str();
+			str_ret = jret.dump();
+			write_debug_log("In Func[%s] : queryClassInfoSqlOpt() fail ! iRet:%d, str_err:%s", funcName, iRet, str_err.c_str());
+		}
+		else{
+			jret["result"] = "0";
+			jret["msg"] = "success";
+			jret["classInfo"] = json::parse(clsInfoArray.dump().c_str());
+			str_ret = jret.dump();
+			write_debug_log("In Func[%s] : queryClassInfoSqlOpt() success!", funcName);
+		}
+	}// end try
+	catch (...){
+		jret["result"] = "1";
+		jret["msg"] = "JSON处理异常!";
+		str_ret = jret.dump();
+		write_debug_log("In Func[%s] : JSON处理异常!", funcName);
+		iRet = send_packet(thread_info->comm_sock, CLIENT_REQ_QUERY_CLASS, str_ret.length(), (const unsigned char*)str_ret.c_str());
+		if (iRet <= 0){
+			write_debug_log("In Func[%s] : 发送应答包错误! iRet:%d, sys_err:%d", funcName, iRet, errno);
+		}
+		return iRet;
+	}//end catch	
+
+	iRet = send_packet(thread_info->comm_sock, CLIENT_REQ_QUERY_CLASS, str_ret.length(), (const unsigned char*)str_ret.c_str());
+	if (iRet <= 0){
+		write_debug_log("In Func[%s] : 发送应答包错误! iRet:%d, sys_err:%d", funcName, iRet, errno);
+	}
+	write_debug_log("In Func[%s] : 发送应答包成功! 发送总长:%d, 包体长:%d, 包体内容:%s", funcName, iRet, str_ret.length(), str_ret.c_str());
+	return iRet;
+}
+
+//5.查询班级 End

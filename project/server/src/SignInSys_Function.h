@@ -10,6 +10,7 @@
 #ifndef __SignInSys_Function_H__
 #define __SignInSys_Function_H__
 
+//request code
 #define CLIENT_REQ_REGISTER 	 1000 //register    
 #define CLIENT_REQ_LOG_IN   	 1001 //log in 	
 
@@ -24,6 +25,11 @@
 #define CLIENT_REQ_ADD_SIGN	 	 1007 //sign in	
 
 
+//error code
+#define ERRNO_ILLEGAL_PARAM		-1000
+
+
+//tag
 #define RESPON_CODE "result"
 #define RESPON_MSG "msg"
 #define PERSON_ID "userId"
@@ -37,7 +43,7 @@
 #include <string>
 #include <vector>
 
-#include "/home/user1/github/json/single_include/nlohmann/json.hpp"
+#include "json.hpp"
 using json = nlohmann::json;
 
 typedef struct tagCommThreadInfo CommThreadInfo;
@@ -100,6 +106,29 @@ typedef struct stuAndClsMap{
 	std::string cls_no;
 }stuAndClsMap;
 
+/*For Query cls*/
+typedef struct student{
+	void to_json(json& j) {
+		j = {
+			{ "userId", userId },
+			{ "UserName", userName }
+		};
+	}
+	void from_json(const json& j){
+		userId = j.at("userId").get<std::string>();
+		userName = j.at("userName").get<std::string>();
+	}
+	std::string userId;
+	std::string userName;
+	std::string cls_no;
+}student;
+
+typedef struct classWithStu{
+	std::string cls_no;
+	std::string cls_name;
+	std::vector<student> students_;
+}classWithStu;
+
 /*Func*/
 //×¢²á
 int insertTeachOrStu(int conn_no, const person& person, std::string& err);
@@ -120,7 +149,9 @@ int updateStuSqlOpt(int conn_no, const stuAndClsMap& mapInfo, std::string& err);
 int updateStudent(const stuAndClsMap& mapInfo, std::string& err);
 int joinClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
-
+//²éÑ¯°à¼¶
+int queryClassInfoSqlOpt(const std::string& t_id, json& classInfoArray, std::string& err);
+int queryClassInfo(CommThreadInfo* thread_info, unsigned char* data);
 
 
 
