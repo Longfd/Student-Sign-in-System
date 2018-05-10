@@ -16,7 +16,7 @@
 #define CLIENT_REQ_ADD_CLASS	 1002 
 #define CLIENT_REQ_QUERY_CLASS	 1003 
 
-#define CLIENT_REQ_ADD_COURSE	 1004 
+#define CLIENT_REQ_JOIN_CLASS	 1004 
 #define CLIENT_REQ_SLCT_COURSE	 1005 
 #define CLIENT_REQ_QUERY_COURSE	 1006 //student(query course has selected) 
 									  //teacher(query course has created)
@@ -83,20 +83,42 @@ typedef struct classInfo{
 	std::string t_id; //创建班级的教师ID
 }classInfo;
 
+typedef struct stuAndClsMap{
+	void to_json(json& j) {
+		j = json{
+		//{ CLS_ID, clsId },
+			{ PERSON_ID, s_id },
+			{ CLS_ID, cls_no }
+	};
+	}
+	void from_json(const json& j) {
+		//clsId = j.at(CLS_ID).get<std::string>();
+		s_id = j.at(PERSON_ID).get<std::string>();
+		cls_no = j.at(CLS_ID).get<std::string>();
+	}
+	std::string s_id;
+	std::string cls_no;
+}stuAndClsMap;
+
 /*Func*/
+//注册
 int insertTeachOrStu(int conn_no, const person& person, std::string& err);
 int insertPerson(const person& person, std::string& err);
 int userRegister(CommThreadInfo* thread_info, unsigned char* data);
 
+//登录
 int queryPerson(person& person, std::string& err);
 int userSignUp(CommThreadInfo* thread_info, unsigned char* data);
 
+//添加班级
 int insertClsSqlOpt(int conn_no, const classInfo& cls, std::string& err);
 int insertCls(const classInfo& cls, std::string& err);
 int addClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
-
-
+//加入班级
+int updateStuSqlOpt(int conn_no, const stuAndClsMap& mapInfo, std::string& err);
+int updateStudent(const stuAndClsMap& mapInfo, std::string& err);
+int joinClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
 
 
