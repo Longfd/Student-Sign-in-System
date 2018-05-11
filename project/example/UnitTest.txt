@@ -23,5 +23,6 @@ UPDATE STUDENT_TBL SET cls_no = 2, cls_name = '信管11-02' WHERE s_id = '00003'
 
 五.查询班级
 {"userId":"00001"}
+{"userId":"00002"}
 SELECT * FROM CLASS_TBL WHERE t_id = '00001';
 SELECT * FROM STUDENT_TBL WHERE cls_no in(1 , 2);

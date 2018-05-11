@@ -11,19 +11,16 @@
 #define __SignInSys_Function_H__
 
 //request code
-#define CLIENT_REQ_REGISTER 	 1000 //register    
-#define CLIENT_REQ_LOG_IN   	 1001 //log in 	
-
-#define CLIENT_REQ_ADD_CLASS	 1002 
-#define CLIENT_REQ_QUERY_CLASS	 1003 
-
-#define CLIENT_REQ_JOIN_CLASS	 1004 
-#define CLIENT_REQ_SLCT_COURSE	 1005 
-#define CLIENT_REQ_QUERY_COURSE	 1006 //student(query course has selected) 
-									  //teacher(query course has created)
-
-#define CLIENT_REQ_ADD_SIGN	 	 1007 //sign in	
-
+#define CLIENT_REQ_REGISTER 		 1000 //register    
+#define CLIENT_REQ_LOG_IN   		 1001 //log in 	
+									 
+#define CLIENT_REQ_ADD_CLASS		 1002 
+#define CLIENT_REQ_QUERY_CLASS		 1003 
+#define CLIENT_REQ_JOIN_CLASS		 1004 
+									 
+#define CLIENT_REQ_ADD_ACTIVITY		 1005 
+#define CLIENT_REQ_JOIN_ACTIVITY	 1006 
+#define CLIENT_REQ_QUERY_ACTIVITY	 1007 
 
 //error code
 #define ERRNO_ILLEGAL_PARAM		-1000
@@ -39,6 +36,8 @@
 
 #define CLS_ID "cls_no"
 #define CLS_NAME "cls_name"
+#define ACT_NAME "act_name"
+#define ACT_NO "act_no"
 
 #include <string>
 #include <vector>
@@ -106,7 +105,7 @@ typedef struct stuAndClsMap{
 	std::string cls_no;
 }stuAndClsMap;
 
-/*For Query cls*/
+/*For Query cls Begin*/
 typedef struct student{
 	void to_json(json& j) {
 		j = {
@@ -128,6 +127,36 @@ typedef struct classWithStu{
 	std::string cls_name;
 	std::vector<student> students_;
 }classWithStu;
+/*For Query cls End*/
+
+/*For Add Activity Begin*/
+typedef struct ActivityReq{
+	std::string userId;
+	std::string actName;
+	std::string actNo;
+	std::vector<std::string> classes_;
+}ActivityReq;
+
+typedef struct ActivityStuInfo{
+	std::string userId;
+	std::string userName;
+	std::string c_id;
+	std::string c_Name;
+}ActivityStuInfo;
+
+typedef struct ActivitySignInfo{
+	std::string actNo;
+	std::string actName;
+	std::string userId;
+	std::string userName;
+	std::string c_id;
+	std::string c_Name;
+	std::string sign_status;
+	std::string sign_date;
+	std::string sign_time;
+}ActivitySignInfo;
+/*For Add Activity End*/
+
 
 /*Func*/
 //注册
@@ -153,6 +182,10 @@ int joinClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 int queryClassInfoSqlOpt(const std::string& t_id, json& classInfoArray, std::string& err);
 int queryClassInfo(CommThreadInfo* thread_info, unsigned char* data);
 
+//创建活动
+int insertActSqlOpt(int conn_no, ActivityReq& actReq, std::string& err);
+int insertActivity(ActivityReq& actReq, std::string& err);
+int addActivity(CommThreadInfo* thread_info, unsigned char* data);
 
 
 

@@ -13,7 +13,7 @@
 using json = nlohmann::json;
 
 #define BUF_SIZE 8192
-#define PACK_TYPE 1003
+#define PACK_TYPE 1005
 #define IP "127.0.0.1"
 #define PORT 7000
 
