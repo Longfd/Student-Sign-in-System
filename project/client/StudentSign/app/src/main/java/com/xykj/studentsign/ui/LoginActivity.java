@@ -54,7 +54,6 @@ public class LoginActivity extends BaseActivity {
         mNo = mTieNo.getText().toString().trim();
         mPwd = mTiePwd.getText().toString().trim();
 
-
         if (TextUtils.isEmpty(mNo)) {
             mTilNo.setError("学号不能为空");
             return;
@@ -119,8 +118,8 @@ public class LoginActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         for (int result : grantResults) {
             Log.d(TAG, "grantResults: " + result);
-            if (result == -1) {
-                finish();
+            if (result == PackageManager.PERMISSION_DENIED) {
+//                finish();
                 break;
             }
         }

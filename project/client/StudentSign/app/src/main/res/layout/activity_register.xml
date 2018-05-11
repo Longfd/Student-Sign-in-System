@@ -18,6 +18,7 @@
             android:text="学号:"/>
 
         <EditText
+            android:text="123"
             android:id="@+id/et_no"
             style="@style/edit_style"
             android:layout_width="match_parent"
@@ -39,6 +40,7 @@
             android:text="姓名:"/>
 
         <EditText
+            android:text="456"
             android:id="@+id/et_name"
             style="@style/edit_style"
             android:layout_width="match_parent"
@@ -60,6 +62,7 @@
             android:text="密码:"/>
 
         <EditText
+            android:text="789"
             android:id="@+id/et_pwd"
             style="@style/edit_style"
             android:layout_width="match_parent"

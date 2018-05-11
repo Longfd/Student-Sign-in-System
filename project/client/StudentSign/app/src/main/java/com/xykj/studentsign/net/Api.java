@@ -15,8 +15,8 @@ import java.util.Map;
 public class Api {
     private static final String TAG = "Api";
     private static Api sInstance;
-    private static String ip = "65.49.226.247";
-    private static int port = 8000;
+    private static String ip = "47.92.75.34";
+    private static int port = 7000;
     private static int TIME_OUT = 10000;
     private final SocketManager mSocketManager;
 
@@ -24,8 +24,12 @@ public class Api {
     private static final int REQUEST_TYPE_LOGIN = 1001;//用户登录
     private static final int REQUEST_TYPE_ADD_CLASS = 1002;//创建班级
     private static final int REQUEST_TYPE_QUERY_CLASS = 1003; //查询班级
-    private static final int REQUEST_TYPE_ADD_ACTIVITY = 1004;//创建活动
-    private static final int REQUEST_TYPE_QUERY_ACTIVITY = 1005;//查询活动
+    private static final int REQUEST_TYPE_JOIN_CLASS = 1004;//加入班级
+    private static final int REQUEST_TYPE_ADD_ACTIVITY = 1005;//创建活动
+    private static final int REQUEST_TYPE_SIGN_ACTIVITY = 1006;//活动签到
+    private static final int REQUEST_TYPE_QUERY_SIGN = 1007;//查询签到
+
+    private static final int REQUEST_TYPE_QUERY_ACTIVITY = 1008;//查询活动
     private Gson mGson;
 
 
@@ -126,7 +130,7 @@ public class Api {
         map.put("activeId", activeId);
         String data = mGson.toJson(map);
         Log.d(TAG, "getClassList: " + data);
-        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_SIGN, data, new ResultCallback<>(callback, Result.class));
     }
 
     public void getJoinClass(String classId, Callback<Result> callback) {
@@ -135,7 +139,7 @@ public class Api {
         map.put("classId", classId);
         String data = mGson.toJson(map);
         Log.d(TAG, "getClassList: " + data);
-        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+        mSocketManager.sendMsg(REQUEST_TYPE_JOIN_CLASS, data, new ResultCallback<>(callback, Result.class));
     }
 
 
@@ -145,7 +149,7 @@ public class Api {
         map.put("activeId", activeId);
         String data = mGson.toJson(map);
         Log.d(TAG, "getClassList: " + data);
-        mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+        mSocketManager.sendMsg(REQUEST_TYPE_SIGN_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
     }
 
     class ResultCallback<T> implements SocketManager.SocketCallback {
