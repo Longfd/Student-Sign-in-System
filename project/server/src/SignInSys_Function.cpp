@@ -640,8 +640,8 @@ int queryClassInfoSqlOpt(const std::string& t_id, json& classInfoArray, std::str
 	int iCount = mysql_num_rows(result);
 	MYSQL_ROW row = mysql_fetch_row(result);
 	if (NULL == result || iCount <= 0 || NULL == row){
-		write_debug_log("In Func[%s] : mysql_num_rows() fail ! iCount:%d, 用户不存在!", funcName, iCount);
-		err = std::string("用户不存在!");
+		write_debug_log("In Func[%s] : mysql_num_rows() fail ! iCount:%d, 用户未创建班级!", funcName, iCount);
+		err = std::string("用户未创建班级!");
 		free_conn(conn_no);
 		return -4;
 	}
@@ -665,14 +665,16 @@ int queryClassInfoSqlOpt(const std::string& t_id, json& classInfoArray, std::str
 	write_debug_log("In Func[%s] : 班级数据加载成功! 班级数:%d", funcName, iCount);
 	mysql_free_result(result);
 
-	size_t delPos = sql_stmt.str().rfind(',');
-	write_debug_log("In Func[%s] : delPos:%d, SQL:%s", funcName, delPos, sql_stmt.str().c_str());
-	sql_stmt.str().erase(delPos);
 	sql_stmt << ");";
-	write_debug_log("In Func[%s] : SQL:%s", funcName, sql_stmt.str().c_str());
+	//oss 返回的str是一个临时对象, 在上面无法删除字符
+	std::string strSql = sql_stmt.str();
+	size_t delPos = strSql.rfind(',');
+	//erase(pos, num), 如果num不指定, 默认将pos后的字符都清除掉
+	strSql.erase(delPos, 1);
+	write_debug_log("In Func[%s] : SQL:%s", funcName, strSql.c_str());
 
 	//查询学生
-	iRet = mysql_query(mysql_conn, sql_stmt.str().c_str());
+	iRet = mysql_query(mysql_conn, strSql.c_str());
 	if (0 != iRet){
 		get_conn_error(&g_conn_list[conn_no], &error_no, errbuf, SQL_ERR_BUF_SIZE);
 		if (2006 == error_no){
@@ -703,6 +705,7 @@ int queryClassInfoSqlOpt(const std::string& t_id, json& classInfoArray, std::str
 		stu.userId = row[0];
 		stu.userName = row[1];
 		stu.cls_no = itoa.str();
+		students_.push_back(stu);
 		row = mysql_fetch_row(result);
 	}
 	write_debug_log("In Func[%s] : 学生数据加载成功! 学生数:%d", funcName, iCount);
