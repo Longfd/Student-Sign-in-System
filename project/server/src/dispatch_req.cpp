@@ -116,8 +116,15 @@ int dispatch_req(CommThreadInfo* thread_info,
 	case CLIENT_REQ_ADD_CLASS:
 		return addClassRequest(thread_info, reqdata);
 
+	case CLIENT_REQ_QUERY_CLASS:
+		return queryClassInfo(thread_info, reqdata);
+
 	case CLIENT_REQ_JOIN_CLASS:
 		return joinClassRequest(thread_info, reqdata);
+
+	case CLIENT_REQ_ADD_ACTIVITY:
+		return addActivity(thread_info, reqdata);
+
 		
 	default:
 		write_debug_log("收到不认识的请求包,包类型码:%d!", func_no);

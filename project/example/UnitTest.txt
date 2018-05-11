@@ -8,5 +8,18 @@ INSERT INTO TEACHER_TBL(t_id,t_name,t_passwd) VALUES('00001','张三','123456');
 {"userId":"00001" ,"userName":"学生","role":"0","pwd":"123456"}
 
 三.添加班级
-{"cls_name":"信管" ,"userId":"00001"}  
-INSERT INTO CLASS_TBL(cls_name,t_id) VALUES('信管', '00001')
+{"cls_name":"信管11-01" ,"userId":"00001"}  
+{"cls_name":"信管11-02" ,"userId":"00001"}
+INSERT INTO CLASS_TBL(cls_name,t_id) VALUES('信管11-01', '00001')
+
+
+五.加入班级
+{"cls_no":"4" ,"userId":"00001"}
+SELECT * FROM CLASS_TBL WHERE cls_no = 3;
+UPDATE STUDENT_TBL SET cls_no = 3 , cls_name = '信管' WHERE s_id = '00001';
+
+六.创建活动
+{"userId":"00001","act_name":"班会","cls_no":["6","7"]}
+INSERT INTO ACTIVITY_TBL(act_name, t_id, act_class) VALUES('班会','00001','6,7');
+SELECT * FROM STUDENT_TBL WHERE cls_no in(6, 7);
+INSERT INTO SINGIN_TBL(act_no,act_name, s_id,s_name, cls_no, cls_name, sign_status) VALUES(2,'班会', '00001', '学生1', 6, '信管11-01', '0');

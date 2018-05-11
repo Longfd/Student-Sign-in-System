@@ -4,13 +4,16 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <string>
 #include <stdlib.h>
 #include <unistd.h>
 
 #include "packet.h"
+#include "json.hpp"
+using json = nlohmann::json;
 
 #define BUF_SIZE 8192
-#define PACK_TYPE 1002
+#define PACK_TYPE 1005
 #define IP "127.0.0.1"
 #define PORT 7000
 
@@ -104,6 +107,7 @@ int main(int argc, char* argv[])
 			return -1;
 		}
 
+		memset(read_buf, 0, BUF_SIZE);
 		result = recv_data(client_fd, (unsigned char*)read_buf, data_len, &recved_len);
 		if (result <= 0){
 			printf("接收包体错误! result:%d\n", result);
@@ -115,7 +119,14 @@ int main(int argc, char* argv[])
 			return -1;
 		}
 
-		printf("server: pack_type[%d], pack_body:%s\n", pack_type, read_buf);
+		//del check literal key
+		read_buf[recved_len - 2] = '\0';
+		std::string str(read_buf);
+		json j = json::parse(str);
+		std::string serial_str = j.dump();
+
+		printf("server: recvLen[%d], pack_type[%d], pack_body(serialized):%s\n", 
+				recved_len, pack_type, serial_str.c_str());
 	}
 
 	close(client_fd);
