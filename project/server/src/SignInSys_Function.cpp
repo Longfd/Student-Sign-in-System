@@ -781,7 +781,7 @@ int queryClassInfo(CommThreadInfo* thread_info, unsigned char* data)
 	std::ostringstream oss_debug;
 	const char* funcName = "queryClassInfo";
 
-	write_debug_log("In Func[%s] : 接收到加入班级请求报文, 包体内容:%s", funcName, data);
+	write_debug_log("In Func[%s] : 接收到查询班级请求报文, 包体内容:%s", funcName, data);
 
 	try{
 		// parse json
@@ -1007,6 +1007,13 @@ int addActivity(CommThreadInfo* thread_info, unsigned char* data)
 	write_debug_log("In Func[%s] : 接收到添加活动请求报文, 包体内容:%s", funcName, data);
 
 	try{
+		////去掉斜杠
+		//for (auto it = str_data.begin(); it != str_data.end();){
+		//	if (*it == '\\')
+		//		it = str_data.erase(it);
+		//	++it;
+		//}
+
 		// parse json
 		json j1 = json::parse(str_data);
 		json j_arry;
@@ -1136,7 +1143,7 @@ int stuSignIn(CommThreadInfo* thread_info, unsigned char* data)
 	std::ostringstream oss_debug;
 	const char* funcName = "stuSignIn";
 
-	write_debug_log("In Func[%s] : 接收到添加活动请求报文, 包体内容:%s", funcName, data);
+	write_debug_log("In Func[%s] : 接收到学生签到请求报文, 包体内容:%s", funcName, data);
 
 	try{
 		// parse json
@@ -1299,7 +1306,7 @@ int queryActivity(CommThreadInfo* thread_info, unsigned char* data)
 	std::ostringstream oss_debug;
 	const char* funcName = "queryActivity";
 
-	write_debug_log("In Func[%s] : 接收到加入班级请求报文, 包体内容:%s", funcName, data);
+	write_debug_log("In Func[%s] : 收到查询活动请求报文, 包体内容:%s", funcName, data);
 
 	try{
 		// parse json
@@ -1411,7 +1418,7 @@ int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::st
 	}
 
 	if (NULL == result || NULL == row){
-		write_debug_log("In Func[%s] : 获取活动签到失败! 活动号:%s", funcName, actInfo.actNo.c_str());
+		write_debug_log("In Func[%s] : 获取签到信息失败! 活动号:%s", funcName, actInfo.actNo.c_str());
 		err = std::string("获取活动信息失败!");
 		free_conn(conn_no);
 		return -7;
@@ -1436,7 +1443,7 @@ int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::st
 		signs_.push_back(tmp);
 		row = mysql_fetch_row(result);
 	}
-	write_debug_log("In Func[%s] : 活动信息加载成功! 活动数:%d", funcName, iCount);
+	write_debug_log("In Func[%s] : 签到信息加载成功! 活动数:%d", funcName, iCount);
 
 	//组装JSON   
 	try{
@@ -1477,7 +1484,7 @@ int querySignInfo(CommThreadInfo* thread_info, unsigned char* data)
 	std::ostringstream oss_debug;
 	const char* funcName = "querySignInfo";
 
-	write_debug_log("In Func[%s] : 接收到加入班级请求报文, 包体内容:%s", funcName, data);
+	write_debug_log("In Func[%s] : 收到查询签到请求报文, 包体内容:%s", funcName, data);
 
 	try{
 		// parse json
