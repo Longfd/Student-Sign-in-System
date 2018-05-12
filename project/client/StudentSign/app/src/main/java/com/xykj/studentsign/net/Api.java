@@ -6,10 +6,14 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.xykj.studentsign.App;
+import com.xykj.studentsign.entity.ClassInfo;
 import com.xykj.studentsign.entity.Result;
 import com.xykj.studentsign.entity.UserInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Api {
@@ -27,9 +31,8 @@ public class Api {
     private static final int REQUEST_TYPE_JOIN_CLASS = 1004;//加入班级
     private static final int REQUEST_TYPE_ADD_ACTIVITY = 1005;//创建活动
     private static final int REQUEST_TYPE_SIGN_ACTIVITY = 1006;//活动签到
-    private static final int REQUEST_TYPE_QUERY_SIGN = 1007;//查询签到
-
-    private static final int REQUEST_TYPE_QUERY_ACTIVITY = 1008;//查询活动
+    private static final int REQUEST_TYPE_QUERY_ACTIVITY = 1007;//查询活动
+    private static final int REQUEST_TYPE_QUERY_SIGN = 1008;//查询签到
     private Gson mGson;
 
 
@@ -69,10 +72,12 @@ public class Api {
      * @param pwd      pwd
      * @param callback callback
      */
-    public void login(String userId, String pwd, Callback<UserInfo> callback) {
-        Map<String, String> map = new HashMap<>();
+    public void login(String userId, String pwd, String role, Callback<UserInfo> callback) {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("userId", userId);
         map.put("pwd", pwd);
+        map.put("role", role);
+        map.put("userName", "");
 
         String data = mGson.toJson(map);
         Log.d(TAG, "login: " + data);
@@ -80,7 +85,7 @@ public class Api {
     }
 
     /**
-     * 创建班级
+     * 3创建班级
      *
      * @param className 班级名
      */
@@ -96,7 +101,7 @@ public class Api {
     }
 
     /**
-     * 班级列表
+     * 4班级列表
      */
     public void getClassList(Callback<Result> callback) {
         Map<String, String> map = new HashMap<>();
@@ -106,16 +111,55 @@ public class Api {
         mSocketManager.sendMsg(REQUEST_TYPE_QUERY_CLASS, data, new ResultCallback<>(callback, Result.class));
     }
 
-    public void createActive(String activityName, String cls, Callback<Result> callback) {
+    /**
+     * 5加入班级
+     */
+    public void getJoinClass(String classId, Callback<UserInfo> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", App.userId);
-        map.put("activityName", activityName);
-        map.put("classList", cls);
+        map.put("cls_no", classId);
+        String data = mGson.toJson(map);
+        Log.d(TAG, "getClassList: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_JOIN_CLASS, data, new ResultCallback<>(callback, UserInfo.class));
+    }
+
+    /**
+     * 6创建活动
+     */
+    public void createActive(String activityName, List<ClassInfo> cls, Callback<Result> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", App.userId);
+        map.put("act_name", activityName);
+
+        String claNo = "";
+        if (cls != null && cls.size() > 0) {
+            ArrayList<String> list = new ArrayList<>();
+            for (ClassInfo cl : cls) {
+                list.add(cl.getClassId());
+            }
+            claNo = mGson.toJson(list);
+        }
+        map.put("cls_no", claNo);
         String data = mGson.toJson(map);
         Log.d(TAG, "createActive: " + data);
         mSocketManager.sendMsg(REQUEST_TYPE_ADD_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
     }
 
+    /**
+     * 7学生签到
+     */
+    public void getSignActive(String activeId, Callback<Result> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", App.userId);
+        map.put("act_no", activeId);
+        String data = mGson.toJson(map);
+        Log.d(TAG, "getClassList: " + data);
+        mSocketManager.sendMsg(REQUEST_TYPE_SIGN_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
+    }
+
+    /**
+     * 8查询活动
+     */
     public void getActiveList(Callback<Result> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", App.userId);
@@ -124,33 +168,21 @@ public class Api {
         mSocketManager.sendMsg(REQUEST_TYPE_QUERY_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
     }
 
+    /**
+     *  9 签到情况
+     */
     public void getSignList(String activeId, Callback<Result> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", App.userId);
-        map.put("activeId", activeId);
+        map.put("atc_no", activeId);
         String data = mGson.toJson(map);
         Log.d(TAG, "getClassList: " + data);
         mSocketManager.sendMsg(REQUEST_TYPE_QUERY_SIGN, data, new ResultCallback<>(callback, Result.class));
     }
 
-    public void getJoinClass(String classId, Callback<Result> callback) {
-        Map<String, String> map = new HashMap<>();
-        map.put("userId", App.userId);
-        map.put("classId", classId);
-        String data = mGson.toJson(map);
-        Log.d(TAG, "getClassList: " + data);
-        mSocketManager.sendMsg(REQUEST_TYPE_JOIN_CLASS, data, new ResultCallback<>(callback, Result.class));
-    }
 
 
-    public void getSignActive(String activeId, Callback<Result> callback) {
-        Map<String, String> map = new HashMap<>();
-        map.put("userId", App.userId);
-        map.put("activeId", activeId);
-        String data = mGson.toJson(map);
-        Log.d(TAG, "getClassList: " + data);
-        mSocketManager.sendMsg(REQUEST_TYPE_SIGN_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
-    }
+
 
     class ResultCallback<T> implements SocketManager.SocketCallback {
 

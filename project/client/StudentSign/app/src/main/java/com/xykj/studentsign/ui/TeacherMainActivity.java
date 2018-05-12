@@ -24,7 +24,7 @@ public class TeacherMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
+        setTitle("教师主页");
         mTvName.setText(App.userName);
         mTvNumber.setText(App.userId);
     }

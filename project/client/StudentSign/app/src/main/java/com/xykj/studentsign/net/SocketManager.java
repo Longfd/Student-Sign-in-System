@@ -130,8 +130,9 @@ public class SocketManager {
             OutputStream os = socket.getOutputStream();
             //咸鱼科技 socket 规范
             byte[] bytes = getBytesByXianYu(type, data);
-            printByte("all", bytes);
+//            printByte("all", bytes);
             os.write(bytes);
+            Log.d(TAG, "send: " + type + "-" + data);
         } catch (Exception e) {
             handleFailed(callback, e);
             return;
@@ -188,7 +189,9 @@ public class SocketManager {
             if (dataBytes == null || !equalByteArray(endCheck, getEndCheckByteArray(dataBytes))) {
                 throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
             }
-            handleSuccess(callback, new String(dataBytes, UTF_8));
+            String receive = new String(dataBytes, UTF_8);
+            Log.d(TAG, "receive: " + type + "-" + receive);
+            handleSuccess(callback, receive);
             socket.close();
         } catch (Exception e) {
             handleFailed(callback, e);
@@ -311,7 +314,8 @@ public class SocketManager {
     private byte[] getEndCheckByteArray(byte[] pkgData) {
         short endCheck = 0;
         for (byte b : pkgData) {
-            endCheck += b;
+            short a = (short) ((b & 0xff));
+            endCheck += a;
         }
         return shortToByteArray(endCheck);
     }

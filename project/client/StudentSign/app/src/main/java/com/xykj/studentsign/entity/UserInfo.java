@@ -9,19 +9,22 @@ public class UserInfo implements Serializable {
     public static final String ROLE_STUDENT = "0";//角色 0 学生
     public static final String ROLE_TEACHER = "1";//角色 1 教师
 
+    private String result;//
+    private String msg;
+
     private String userName;//学号,
     private String userId;//姓名,
     private String role;//角色 0-学生, 1-教师
     private String pwd;//密码
 
-    private String result;//
-    private String msg;
+
     @SerializedName("cls_no")
     private String classId;// 所在班级
     @SerializedName("cls_name")
     private String className;//班级名称
     private String id;//班级创建人
 
+    @SerializedName("status")
     private String signState;//签到状态
 
 

@@ -44,7 +44,7 @@ public class CreateActiveActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_active);
         ButterKnife.bind(this);
-
+        setTitle("创建活动");
         mClassList = new ArrayList<>();
         mCheckedList = new ArrayList<>();
         mApi = Api.getInstance(this);
@@ -91,17 +91,17 @@ public class CreateActiveActivity extends BaseActivity {
             showToast("活动名不能为空");
             return;
         }
-        StringBuilder builder = new StringBuilder();
-        if (mCheckedList.size() > 0) {
-            for (ClassInfo classInfo : mCheckedList) {
-                builder.append(classInfo.getClassId())
-                        .append(",");
-            }
-        }
-        String cls = builder.toString().substring(0, builder.length() - 1);
+//        StringBuilder builder = new StringBuilder();
+//        if (mCheckedList.size() > 0) {
+//            for (ClassInfo classInfo : mCheckedList) {
+//                builder.append(classInfo.getClassId())
+//                        .append(",");
+//            }
+//        }
+//        String cls = builder.toString().substring(0, builder.length() - 1);
 
         showProgress();
-        mApi.createActive(name, cls, new Api.Callback<Result>() {
+        mApi.createActive(name, mCheckedList, new Api.Callback<Result>() {
             @Override
             public void OnSuccess(Result data) {
                 closeProgress();

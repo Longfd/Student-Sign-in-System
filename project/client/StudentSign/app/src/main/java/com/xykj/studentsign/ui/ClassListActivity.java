@@ -37,12 +37,15 @@ public class ClassListActivity extends BaseActivity {
     SwipeRefreshLayout mSrlRefresh;
     private Api mApi;
     private SimpleRvAdapter<ClassInfo> mAdapter;
+    private CreateClassDialog mCreateClassDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
         ButterKnife.bind(this);
+
+        setTitle("班级列表");
 
         mApi = Api.getInstance(this);
         mRvClassList.setLayoutManager(new LinearLayoutManager(this));
@@ -58,7 +61,7 @@ public class ClassListActivity extends BaseActivity {
 
             @Override
             protected boolean getLongClick(ClassInfo item, int adapterPosition) {
-                showQrCode(item.getId());
+                showQrCode(item.getClassId());
                 return true;
             }
 
@@ -118,14 +121,14 @@ public class ClassListActivity extends BaseActivity {
     }
 
     public void createClass(View view) {
-        CreateClassDialog createClassDialog = new CreateClassDialog(this);
-        createClassDialog.setInputListener(new CreateClassDialog.OnInputListener() {
+        mCreateClassDialog = new CreateClassDialog(this);
+        mCreateClassDialog.setInputListener(new CreateClassDialog.OnInputListener() {
             @Override
             public void onInput(String className) {
                 createClass(className);
             }
         });
-        createClassDialog.show();
+        mCreateClassDialog.show();
     }
 
     private void createClass(String className) {
@@ -137,6 +140,9 @@ public class ClassListActivity extends BaseActivity {
                 if (Result.RESULT_SUCCESS.equals(data.getResult())) {
                     //创建成功
                     showToast("创建班级成功!");
+                    if (mCreateClassDialog != null) {
+                        mCreateClassDialog.dismiss();
+                    }
                     //刷新列表
                     getData();
                 } else {
@@ -153,37 +159,4 @@ public class ClassListActivity extends BaseActivity {
         });
     }
 
-//    class ClassAdapter extends RecyclerView.Adapter<ViewHolder> {
-//
-//        @Override
-//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = getLayoutInflater().inflate(R.layout.item_class, parent, false);
-//            return new ViewHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(ViewHolder holder, int position) {
-//            ClassInfo classInfo = mClassInfos.get(position);
-//            holder.name.setText(classInfo.getClassName());
-//            Intent intent = new Intent(ClassListActivity.this, StudentListActivity.class);
-//            intent.putExtra(DATA_CLASS_INFO, classInfo);
-//            startActivity(intent);
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return mClassInfos.size();
-//        }
-//    }
-//
-//    class ViewHolder extends RecyclerView.ViewHolder {
-//
-//        TextView name;
-//
-//        public ViewHolder(View itemView) {
-//            super(itemView);
-//
-//            name = itemView.findViewById(R.id.tv_name);
-//        }
-//    }
 }

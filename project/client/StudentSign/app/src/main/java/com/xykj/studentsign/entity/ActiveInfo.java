@@ -1,8 +1,11 @@
 package com.xykj.studentsign.entity;
 
-public class ActiveInfo {
+import com.google.gson.annotations.SerializedName;
 
+public class ActiveInfo {
+    @SerializedName("act_name")
     private String name;
+    @SerializedName("act_no")
     private String id;
 
     public String getName() {

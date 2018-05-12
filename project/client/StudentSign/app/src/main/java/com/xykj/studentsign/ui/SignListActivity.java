@@ -44,7 +44,7 @@ public class SignListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_list);
         ButterKnife.bind(this);
-
+        setTitle("签到详情");
         mActiveId = getIntent().getStringExtra(ACTIVE_ID);
 
         mApi = Api.getInstance(this);
