@@ -64,6 +64,7 @@ public class SignListActivity extends BaseActivity {
                 super.bindItem(holder, userInfo);
                 int color;
                 if ("1".equals(userInfo.getSignState())) {
+                    //已签到
                     color = txtGray;
                 } else {
                     color = txtRed;

@@ -9,7 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import com.xykj.studentsign.R;
 import com.xykj.studentsign.adapter.SimpleRvAdapter;
 import com.xykj.studentsign.entity.ClassInfo;
+import com.xykj.studentsign.entity.Result;
 import com.xykj.studentsign.entity.UserInfo;
+import com.xykj.studentsign.net.Api;
 import com.xykj.studentsign.ui.base.BaseActivity;
 
 import butterknife.BindView;
@@ -19,6 +21,7 @@ public class StudentListActivity extends BaseActivity {
     public static final String DATA_CLASS_INFO = "classInfo";
     @BindView(R.id.rv_student)
     RecyclerView mRvStudent;
+    private Api mApi;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,5 +45,8 @@ public class StudentListActivity extends BaseActivity {
                 return item.getUserName();
             }
         }.setData(classInfo.getStudents()));
+
     }
+
+
 }

@@ -127,19 +127,18 @@ public class Api {
      * 6创建活动
      */
     public void createActive(String activityName, List<ClassInfo> cls, Callback<Result> callback) {
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("userId", App.userId);
         map.put("act_name", activityName);
 
-        String claNo = "";
+        ArrayList<String> list = new ArrayList<>();
         if (cls != null && cls.size() > 0) {
-            ArrayList<String> list = new ArrayList<>();
             for (ClassInfo cl : cls) {
                 list.add(cl.getClassId());
             }
-            claNo = mGson.toJson(list);
         }
-        map.put("cls_no", claNo);
+        map.put("cls_no", list);
+
         String data = mGson.toJson(map);
         Log.d(TAG, "createActive: " + data);
         mSocketManager.sendMsg(REQUEST_TYPE_ADD_ACTIVITY, data, new ResultCallback<>(callback, Result.class));
@@ -169,19 +168,16 @@ public class Api {
     }
 
     /**
-     *  9 签到情况
+     * 9 签到情况
      */
     public void getSignList(String activeId, Callback<Result> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("userId", App.userId);
-        map.put("atc_no", activeId);
+        map.put("act_no", activeId);
         String data = mGson.toJson(map);
         Log.d(TAG, "getClassList: " + data);
         mSocketManager.sendMsg(REQUEST_TYPE_QUERY_SIGN, data, new ResultCallback<>(callback, Result.class));
     }
-
-
-
 
 
     class ResultCallback<T> implements SocketManager.SocketCallback {

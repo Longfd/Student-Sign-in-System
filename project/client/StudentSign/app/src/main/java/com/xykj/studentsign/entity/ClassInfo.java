@@ -52,12 +52,12 @@ public class ClassInfo implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClassInfo classInfo = (ClassInfo) o;
-        return Objects.equals(id, classInfo.id);
+        return Objects.equals(classId, classInfo.classId);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id);
+        return Objects.hash(classId);
     }
 }
