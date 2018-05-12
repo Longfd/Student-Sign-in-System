@@ -1466,7 +1466,7 @@ int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::st
 			sign[PERSON_NAME] = it.userName;
 			sign[CLS_ID] = it.c_id;
 			sign[CLS_NAME] = it.c_Name;
-			sign["status"] = it.sign_time;
+			sign["status"] = it.sign_status;
 			sign["date"] = it.sign_date;
 			sign["time"] = it.sign_time;
 
