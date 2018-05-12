@@ -910,11 +910,21 @@ int insertActSqlOpt(int conn_no, ActivityReq& actReq, std::string& err)
 	MYSQL_RES* result = mysql_store_result(mysql_conn);
 	int iCount = mysql_num_rows(result);
 	MYSQL_ROW row = mysql_fetch_row(result);
-	if (NULL == result || iCount <= 0 || NULL == row){
-		write_debug_log("In Func[%s] : mysql_num_rows() fail ! iCount:%d, 用户未创建班级!", funcName, iCount);
-		err = std::string("用户未创建班级!");
+
+	//没有学生
+	if (iCount == 0){
+		write_debug_log("In Func[%s] : [WARNING]该活动班级没有学生信息!", funcName, iCount);
+		return 0;
+	}
+
+
+	if (NULL == result|| NULL == row){
+		write_debug_log("In Func[%s] : mysql_num_rows() fail ! iCount:%d, 获取学生信息错误!", funcName, iCount);
+		err = std::string("获取学生信息错误!");
 		return -4;
 	}
+
+
 	std::vector<ActivitySignInfo> signs_;
 	for (int i = 0; i < iCount; ++i){
 		ActivitySignInfo sign;
@@ -1083,7 +1093,7 @@ int updateSignInfoSqlOpt(int conn_no, const ActivitySignInfo& signInfo, std::str
 
 	if (NULL == g_conn_list || conn_no < 0 || conn_no >= g_conn_count)	return -1;
 
-	sql_stmt << "UPDATE SINGIN_TBL SET sign_date=curdate(), sign_time=curtime(), sign_status='0' WHERE act_no ="
+	sql_stmt << "UPDATE SIGNIN_TBL SET sign_date=curdate(), sign_time=curtime(), sign_status='0' WHERE act_no ="
 		<< signInfo.actNo << " and s_id = '"
 		<< signInfo.userId << "';";
 	write_debug_log("In Func[%s] : SQL:%s", funcName, sql_stmt.str().c_str());
@@ -1389,7 +1399,7 @@ int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::st
 		return -2;
 	}
 
-	sql_stmt << "SELECT * FROM SINGIN_TBL WHERE act_no = " << actInfo.actNo 
+	sql_stmt << "SELECT * FROM SIGNIN_TBL WHERE act_no = " << actInfo.actNo 
 		<< " ORDER BY cls_no, sign_status ASC;";
 	write_debug_log("In Func[%s] : SQL:%s", funcName, sql_stmt.str().c_str());
 
@@ -1424,6 +1434,7 @@ int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::st
 		return -7;
 	}
 
+	write_debug_log("In Func[%s] : 查询签到信息成功! 签到数:%d, 开始加载...", funcName, iCount);
 	//读取签到信息
 	std::vector<ActivitySignInfo> signs_;
 	for (int i = 0; i < iCount; ++i){
@@ -1434,12 +1445,12 @@ int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::st
 		tmp.actName = row[1];
 		tmp.userId = row[2];//学生号
 		tmp.userName = row[3];//学生名
-		tmp.c_id = row[4];
-		tmp.c_Name = row[5];
-		tmp.sign_date = row[6];
-		tmp.sign_time = row[7];
-		tmp.sign_status = row[8];
-
+		if (row[4])	tmp.c_id = row[4];
+		if (row[5])	tmp.c_Name = row[5];
+		if (row[6])	tmp.sign_date = row[6];
+		if (row[7])	tmp.sign_time = row[7];
+		if (row[8])	tmp.sign_status = row[8];
+		//write_debug_log("In Func[%s] : push_back()", funcName);
 		signs_.push_back(tmp);
 		row = mysql_fetch_row(result);
 	}
