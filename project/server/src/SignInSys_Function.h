@@ -112,7 +112,7 @@ typedef struct student{
 	void to_json(json& j) {
 		j = {
 			{ "userId", userId },
-			{ "UserName", userName }
+			{ "userName", userName }
 		};
 	}
 	void from_json(const json& j){

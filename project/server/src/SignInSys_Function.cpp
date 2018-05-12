@@ -934,7 +934,7 @@ int insertActSqlOpt(int conn_no, ActivityReq& actReq, std::string& err)
 	//mysql_autocommit(mysql_conn, 0);
 	for (auto it : signs_){
 		std::ostringstream ossBatchInert;
-		ossBatchInert << "INSERT INTO SINGIN_TBL(act_no,act_name, s_id,s_name, cls_no, cls_name, sign_status)VALUES("
+		ossBatchInert << "INSERT INTO SIGNIN_TBL(act_no,act_name, s_id,s_name, cls_no, cls_name, sign_status)VALUES("
 			<< actReq.actNo << ",'"
 			<< actReq.actName << "','"
 			<< it.userId << "','"//学生号
