@@ -12,6 +12,7 @@ import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.xykj.studentsign.App;
 import com.xykj.studentsign.R;
 import com.xykj.studentsign.entity.Result;
+import com.xykj.studentsign.entity.UserInfo;
 import com.xykj.studentsign.net.Api;
 import com.xykj.studentsign.ui.base.BaseActivity;
 
@@ -35,6 +36,8 @@ public class StudentMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_main);
         ButterKnife.bind(this);
+        setTitle("学生主页");
+
         mApi = Api.getInstance(this);
 
         mTvClass.setText(App.userInfo.getClassName());
@@ -54,8 +57,7 @@ public class StudentMainActivity extends BaseActivity {
             }
             if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                 String result = bundle.getString(CodeUtils.RESULT_STRING);
-                Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
-
+//                Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
                 if (requestCode == REQUEST_CODE_SIGN) {
                     signActive(result);
                 } else if (requestCode == REQUEST_CODE_JOIN_CLASS) {
@@ -70,15 +72,13 @@ public class StudentMainActivity extends BaseActivity {
     private void joinCLass(String code) {
 
         showProgress();
-        mApi.getJoinClass(code, new Api.Callback<Result>() {
+        mApi.getJoinClass(code, new Api.Callback<UserInfo>() {
             @Override
-            public void OnSuccess(Result data) {
+            public void OnSuccess(UserInfo data) {
                 closeProgress();
                 if (Result.RESULT_SUCCESS.equals(data.getResult())) {
-                    String msg = data.getMsg();
                     showToast("加入班级成功");
-
-                    mTvClass.setText(msg);
+                    mTvClass.setText(data.getClassName());
                 } else {
                     showToast(data.getMsg());
                 }

@@ -39,6 +39,7 @@ public class ActiveListActivity extends BaseActivity {
         setContentView(R.layout.activity_active_list);
         ButterKnife.bind(this);
 
+        setTitle("活动列表");
         mApi = Api.getInstance(this);
 
         mRvActive.setLayoutManager(new LinearLayoutManager(this));

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StudentSign</string>
+    <string name="app_name">MicroSign</string>
     <string name="hint_input_no">请输入学号</string>
     <string name="hint_input_name">请输入姓名</string>
     <string name="radio_student">学生</string>

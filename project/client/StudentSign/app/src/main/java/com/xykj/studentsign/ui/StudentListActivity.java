@@ -25,7 +25,7 @@ public class StudentListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_list);
         ButterKnife.bind(this);
-
+        setTitle("学生列表");
         ClassInfo classInfo = (ClassInfo) getIntent().getSerializableExtra(DATA_CLASS_INFO);
 
         mRvStudent.setLayoutManager(new LinearLayoutManager(this));

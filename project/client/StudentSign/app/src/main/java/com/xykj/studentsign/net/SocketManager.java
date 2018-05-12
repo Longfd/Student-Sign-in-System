@@ -3,6 +3,7 @@ package com.xykj.studentsign.net;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,7 +130,9 @@ public class SocketManager {
             OutputStream os = socket.getOutputStream();
             //咸鱼科技 socket 规范
             byte[] bytes = getBytesByXianYu(type, data);
+//            printByte("all", bytes);
             os.write(bytes);
+            Log.d(TAG, "send: " + type + "-" + data);
         } catch (Exception e) {
             handleFailed(callback, e);
             return;
@@ -149,12 +152,15 @@ public class SocketManager {
             byte[] headLen = subArray(head, HEAD_TYPE_LENGTH, HEAD_TYPE_LENGTH + HEAD_LEN_LENGTH);
             byte[] headCheck = subArray(head, HEAD_TYPE_LENGTH + HEAD_LEN_LENGTH, HEAD_LENGTH);
 
-            if (headCheck == null || headType == null || headLen == null || !equalByteArray(headCheck, getCheckByteArray(headType, headLen))) {
+            if (headCheck == null
+                    || headType == null
+                    || headLen == null
+                    || !equalByteArray(headCheck, getCheckByteArray(headType, headLen))) {
                 throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
             }
 
             int dataTotalLen = byteArrayToInt(headLen);
-            byte[] totalDataByte = new byte[]{};
+            /*byte[] totalDataByte = new byte[]{};
 
             byte[] buffer = new byte[1024];
 
@@ -171,7 +177,10 @@ public class SocketManager {
                 if (readLen >= dataTotalLen) {
                     break;
                 }
-            }
+            }*/
+
+            byte[] totalDataByte = new byte[dataTotalLen];
+            int len = is.read(totalDataByte);
 
             byte[] dataBytes = subArray(totalDataByte, 0, dataTotalLen - END_CHECK);
             byte[] endCheck = subArray(totalDataByte, dataTotalLen - END_CHECK, dataTotalLen);
@@ -180,11 +189,22 @@ public class SocketManager {
             if (dataBytes == null || !equalByteArray(endCheck, getEndCheckByteArray(dataBytes))) {
                 throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
             }
-            handleSuccess(callback, new String(dataBytes, UTF_8));
+            String receive = new String(dataBytes, UTF_8);
+            Log.d(TAG, "receive: " + type + "-" + receive);
+            handleSuccess(callback, receive);
             socket.close();
         } catch (Exception e) {
             handleFailed(callback, e);
         }
+    }
+
+    private void printByte(String name, byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b : bytes) {
+            builder.append(Integer.toHexString((short) (b & 0xff)))
+                    .append(" ");
+        }
+        Log.d(TAG, name + " : " + builder.toString());
     }
 
     private void handleSuccess(final SocketCallback callback, final String content) {
@@ -241,6 +261,10 @@ public class SocketManager {
         byte[] headLen = intToByteArray(data.getBytes(UTF_8).length + END_CHECK);
         //包头校验(SHORT): 2 Byte(网络序or大端序) [报文类型+报文长度] 单个字节累加之和
         byte[] headCheck = getCheckByteArray(headType, headLen);
+
+//        printByte("headType", headType);
+//        printByte("headLen", headLen);
+//        printByte("headCheck", headCheck);
         //包体
         byte[] pkgData = data.getBytes(UTF_8);
         //包尾校验(SHORT): 2 Byte(网络序or大端序) [包体内容] 单个字节累加之和
@@ -276,11 +300,13 @@ public class SocketManager {
         short check = 0;
 
         for (byte b : headType) {
-            check += b;
+            short a = (short) (b & 0xff);
+            check += a;
         }
 
         for (byte b : headLen) {
-            check += b;
+            short a = (short) ((b & 0xff));
+            check += a;
         }
         return shortToByteArray(check);
     }
@@ -288,7 +314,8 @@ public class SocketManager {
     private byte[] getEndCheckByteArray(byte[] pkgData) {
         short endCheck = 0;
         for (byte b : pkgData) {
-            endCheck += b;
+            short a = (short) ((b & 0xff));
+            endCheck += a;
         }
         return shortToByteArray(endCheck);
     }

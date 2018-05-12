@@ -3,8 +3,8 @@ package com.xykj.studentsign.entity;
 import java.util.List;
 
 public class Result {
-    public static final String RESULT_SUCCESS = "1";
-    public static final String RESULT_FAILED = "0";
+    public static final String RESULT_SUCCESS = "0";
+    public static final String RESULT_FAILED = "1";
 
     private String result;
     private String msg;

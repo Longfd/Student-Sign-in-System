@@ -70,10 +70,11 @@ public class RegisterActivity extends BaseActivity {
         }
 
         UserInfo userInfo = new UserInfo(userName, userId, role, pwd);
-
+        showProgress();
         mApi.register(userInfo, new Api.Callback<Result>() {
             @Override
             public void OnSuccess(Result data) {
+                closeProgress();
                 if (RESULT_SUCCESS.equals(data.getResult())) {
                     Toast.makeText(RegisterActivity.this, "注册成功!", Toast.LENGTH_SHORT).show();
                     finish();
@@ -84,6 +85,7 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void OnFailed(Exception e) {
+                closeProgress();
                 e.printStackTrace();
                 Toast.makeText(RegisterActivity.this, "网络错误!", Toast.LENGTH_SHORT).show();
             }
