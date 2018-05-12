@@ -21,6 +21,7 @@
 #define CLIENT_REQ_ADD_ACTIVITY		 1005 
 #define CLIENT_REQ_JOIN_ACTIVITY	 1006 
 #define CLIENT_REQ_QUERY_ACTIVITY	 1007 
+#define CLIENT_REQ_QUERY_SIGN		 1008
 
 //error code
 #define ERRNO_ILLEGAL_PARAM		-1000
@@ -103,6 +104,7 @@ typedef struct stuAndClsMap{
 	}
 	std::string s_id;
 	std::string cls_no;
+	std::string cls_name;
 }stuAndClsMap;
 
 /*For Query cls Begin*/
@@ -131,9 +133,9 @@ typedef struct classWithStu{
 
 /*For Add Activity Begin*/
 typedef struct ActivityReq{
-	std::string userId;
 	std::string actName;
 	std::string actNo;
+	std::string userId;
 	std::vector<std::string> classes_;
 }ActivityReq;
 
@@ -147,8 +149,8 @@ typedef struct ActivityStuInfo{
 typedef struct ActivitySignInfo{
 	std::string actNo;
 	std::string actName;
-	std::string userId;
-	std::string userName;
+	std::string userId;//学生号
+	std::string userName;//学生名
 	std::string c_id;
 	std::string c_Name;
 	std::string sign_status;
@@ -174,8 +176,8 @@ int insertCls(const classInfo& cls, std::string& err);
 int addClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
 //加入班级
-int updateStuSqlOpt(int conn_no, const stuAndClsMap& mapInfo, std::string& err);
-int updateStudent(const stuAndClsMap& mapInfo, std::string& err);
+int updateStuSqlOpt(int conn_no, stuAndClsMap& mapInfo, std::string& err);//查询班级 + 更新学生
+int updateStudent(stuAndClsMap& mapInfo, std::string& err);
 int joinClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
 //查询班级
@@ -187,11 +189,18 @@ int insertActSqlOpt(int conn_no, ActivityReq& actReq, std::string& err);
 int insertActivity(ActivityReq& actReq, std::string& err);
 int addActivity(CommThreadInfo* thread_info, unsigned char* data);
 
+//活动签到
+int updateSignInfoSqlOpt(int conn_no, const ActivitySignInfo& signInfo, std::string& err);
+int updateSignInfo(const ActivitySignInfo& signInfo, std::string& err);
+int stuSignIn(CommThreadInfo* thread_info, unsigned char* data);
 
+//查询活动
+int queryActInfoSqlOpt(const std::string& t_id, json& actInfoArray, std::string& err);
+int queryActivity(CommThreadInfo* thread_info, unsigned char* data);
 
-
-
-
+//查询签到
+int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::string& err);
+int querySignInfo(CommThreadInfo* thread_info, unsigned char* data);
 
 #endif
 
