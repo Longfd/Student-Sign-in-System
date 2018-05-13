@@ -16,6 +16,9 @@ import android.widget.Toast;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.xykj.studentsign.R;
 
+/**
+ * 基类
+ */
 public abstract class BaseActivity extends AppCompatActivity {
     protected String TAG = getClass().getSimpleName();
     public static final String RESULT_REFRESH = "refresh";
@@ -30,6 +33,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
+    /**
+     * 显示进度框
+     */
     protected void showProgress() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -38,21 +44,32 @@ public abstract class BaseActivity extends AppCompatActivity {
         mProgressDialog.show();
     }
 
+    /**
+     * 关闭进度框
+     */
     protected void closeProgress() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
     }
 
-
+    /**
+     * 显示网络错误
+     */
     protected void showNetError() {
         showToast(R.string.network_error);
     }
 
+    /**
+     * 显示提醒
+     */
     private void showToast(int resId) {
         showToast(getResources().getString(resId));
     }
 
+    /**
+     * 显示提醒
+     */
     protected void showToast(String content) {
         if (mToast == null) {
             mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
@@ -73,10 +90,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 数据刷新
+     */
     protected void refresh() {
 
     }
 
+    /**
+     * 显示二维码弹出框
+     */
     protected void showQrCode(String content) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         ImageView imageView = new ImageView(this);

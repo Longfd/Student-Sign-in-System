@@ -31,6 +31,9 @@ import static com.xykj.studentsign.entity.Result.RESULT_FAILED;
 import static com.xykj.studentsign.entity.UserInfo.ROLE_STUDENT;
 import static com.xykj.studentsign.entity.UserInfo.ROLE_TEACHER;
 
+/**
+ * 登录界面
+ */
 public class LoginActivity extends BaseActivity {
     public static final int PERMISSION_REQUEST_CODE = 0xab;
     @BindView(R.id.tie_no)
@@ -55,15 +58,20 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
         mRgRole.check(R.id.rb_student);
 
         setTitle("登录");
+        //请求权限
         request();
     }
 
+    /**
+     * 登录
+     */
     public void login(View view) {
         mNo = mTieNo.getText().toString().trim();
         mPwd = mTiePwd.getText().toString().trim();
@@ -81,43 +89,49 @@ public class LoginActivity extends BaseActivity {
         showProgress();
         Api.getInstance(getApplicationContext())
                 .login(mNo, mPwd, role, new Api.Callback<UserInfo>() {
-            @Override
-            public void OnSuccess(UserInfo data) {
-                closeProgress();
+                    @Override
+                    public void OnSuccess(UserInfo data) {
+                        closeProgress();
 
-                if (RESULT_FAILED.equals(data.getResult())) {
-                    showToast(data.getMsg());
-                    return;
-                }
+                        if (RESULT_FAILED.equals(data.getResult())) {
+                            showToast(data.getMsg());
+                            return;
+                        }
 
-                App.userId = data.getUserId();
-                App.userName = data.getUserName();
-                App.role = data.getRole();
-                App.userInfo = data;
+                        App.userId = data.getUserId();
+                        App.userName = data.getUserName();
+                        App.role = data.getRole();
+                        App.userInfo = data;
 
-                showToast("登录成功!");
-                Class cls = TeacherMainActivity.class;
-                if (ROLE_STUDENT.equals(App.role)) {
-                    cls = StudentMainActivity.class;
-                }
-                startActivity(new Intent(LoginActivity.this, cls));
-                finish();
-            }
+                        showToast("登录成功!");
+                        Class cls = TeacherMainActivity.class;
+                        if (ROLE_STUDENT.equals(App.role)) {
+                            cls = StudentMainActivity.class;
+                        }
+                        startActivity(new Intent(LoginActivity.this, cls));
+                        finish();
+                    }
 
-            @Override
-            public void OnFailed(Exception e) {
-                closeProgress();
-                e.printStackTrace();
-                showNetError();
-            }
-        });
+                    @Override
+                    public void OnFailed(Exception e) {
+                        closeProgress();
+                        e.printStackTrace();
+                        showNetError();
+                    }
+                });
 
     }
 
+    /**
+     * 跳转注册界面
+     */
     public void register(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
 
+    /**
+     * 请求权限
+     */
     private void request() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> pList = new ArrayList<>();

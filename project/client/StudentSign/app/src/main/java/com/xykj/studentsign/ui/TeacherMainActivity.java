@@ -12,6 +12,9 @@ import com.xykj.studentsign.ui.base.BaseActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 教师主界面
+ */
 public class TeacherMainActivity extends BaseActivity {
 
     @BindView(R.id.tv_name)
@@ -22,6 +25,7 @@ public class TeacherMainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setTitle("教师主页");
@@ -29,11 +33,17 @@ public class TeacherMainActivity extends BaseActivity {
         mTvNumber.setText(App.userId);
     }
 
+    /**
+     * 跳转活动界面
+     */
     public void myActivity(View view) {
         Intent intent = new Intent(this, ActiveListActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * 跳转班级界面
+     */
     public void myClass(View view) {
         Intent intent = new Intent(this, ClassListActivity.class);
         startActivity(intent);

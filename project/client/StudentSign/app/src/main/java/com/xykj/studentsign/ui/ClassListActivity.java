@@ -26,6 +26,9 @@ import butterknife.ButterKnife;
 
 import static com.xykj.studentsign.ui.StudentListActivity.DATA_CLASS_INFO;
 
+/**
+ * 班级列表界面
+ */
 public class ClassListActivity extends BaseActivity {
 
 
@@ -46,7 +49,7 @@ public class ClassListActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setTitle("班级列表");
-
+        //初始化
         mApi = Api.getInstance(this);
         mRvClassList.setLayoutManager(new LinearLayoutManager(this));
         mRvClassList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -71,7 +74,7 @@ public class ClassListActivity extends BaseActivity {
             }
         };
         mRvClassList.setAdapter(mAdapter);
-
+        //监听刷新
         mSrlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -81,6 +84,9 @@ public class ClassListActivity extends BaseActivity {
         getData();
     }
 
+    /**
+     * 获取数据
+     */
     private void getData() {
         new Handler(getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -91,6 +97,9 @@ public class ClassListActivity extends BaseActivity {
         }, 100);
     }
 
+    /**
+     * 获取班级列表
+     */
     private void getClassList() {
         mApi.getClassList(new Api.Callback<Result>() {
             @Override
@@ -120,6 +129,9 @@ public class ClassListActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 创建班级
+     */
     public void createClass(View view) {
         mCreateClassDialog = new CreateClassDialog(this);
         mCreateClassDialog.setInputListener(new CreateClassDialog.OnInputListener() {
@@ -131,11 +143,15 @@ public class ClassListActivity extends BaseActivity {
         mCreateClassDialog.show();
     }
 
+    /**
+     * 请求服务器 创建班级
+     */
     private void createClass(String className) {
         showProgress();
         mApi.createClass(className, new Api.Callback<Result>() {
             @Override
             public void OnSuccess(Result data) {
+                //请求成功
                 closeProgress();
                 if (Result.RESULT_SUCCESS.equals(data.getResult())) {
                     //创建成功
@@ -152,6 +168,7 @@ public class ClassListActivity extends BaseActivity {
 
             @Override
             public void OnFailed(Exception e) {
+                //请求失败
                 closeProgress();
                 e.printStackTrace();
                 showNetError();

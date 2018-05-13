@@ -12,6 +12,9 @@ import com.xykj.studentsign.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 适配器
+ */
 public abstract class SimpleRvAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;

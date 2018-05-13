@@ -19,6 +19,9 @@ import com.xykj.studentsign.ui.base.BaseActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 学生主界面
+ */
 public class StudentMainActivity extends BaseActivity {
 
     public static final int REQUEST_CODE_SIGN = 2001;
@@ -34,6 +37,7 @@ public class StudentMainActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化
         setContentView(R.layout.activity_student_main);
         ButterKnife.bind(this);
         setTitle("学生主页");
@@ -56,12 +60,13 @@ public class StudentMainActivity extends BaseActivity {
                 return;
             }
             if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                //获取二维码 数据
                 String result = bundle.getString(CodeUtils.RESULT_STRING);
 //                Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
                 if (requestCode == REQUEST_CODE_SIGN) {
                     signActive(result);
                 } else if (requestCode == REQUEST_CODE_JOIN_CLASS) {
-                    joinCLass(result);
+                    joinClass(result);
                 }
             } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                 Toast.makeText(this, "解析二维码失败", Toast.LENGTH_LONG).show();
@@ -69,7 +74,10 @@ public class StudentMainActivity extends BaseActivity {
         }
     }
 
-    private void joinCLass(String code) {
+    /**
+     * 加入班级
+     */
+    private void joinClass(String code) {
 
         showProgress();
         mApi.getJoinClass(code, new Api.Callback<UserInfo>() {
@@ -92,6 +100,9 @@ public class StudentMainActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 签到
+     */
     private void signActive(String code) {
         showProgress();
         mApi.getSignActive(code, new Api.Callback<Result>() {
@@ -114,15 +125,23 @@ public class StudentMainActivity extends BaseActivity {
         });
     }
 
-
+    /**
+     * 签到
+     */
     public void sign(View view) {
         scan(REQUEST_CODE_SIGN);
     }
 
+    /**
+     * 加入班级
+     */
     public void joinClass(View view) {
         scan(REQUEST_CODE_JOIN_CLASS);
     }
 
+    /**
+     * 扫描二维码
+     */
     public void scan(int requestCode) {
         Intent intent = new Intent(this, CaptureActivity.class);
         startActivityForResult(intent, requestCode);

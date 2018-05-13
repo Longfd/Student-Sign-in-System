@@ -24,6 +24,9 @@ import butterknife.ButterKnife;
 
 import static com.xykj.studentsign.ui.SignListActivity.ACTIVE_ID;
 
+/**
+ * 活动列表界面
+ */
 public class ActiveListActivity extends BaseActivity {
 
     @BindView(R.id.rv_active)
@@ -67,6 +70,7 @@ public class ActiveListActivity extends BaseActivity {
         };
         mRvActive.setAdapter(mAdapter);
 
+        //监听下拉刷新
         mSrlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -76,6 +80,9 @@ public class ActiveListActivity extends BaseActivity {
         getData();
     }
 
+    /**
+     * 获取数据
+     */
     private void getData() {
         new Handler(getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -86,6 +93,9 @@ public class ActiveListActivity extends BaseActivity {
         }, 100);
     }
 
+    /**
+     * 获取活动列表
+     */
     private void getActiveList() {
         mApi.getActiveList(new Api.Callback<Result>() {
             @Override
@@ -112,6 +122,9 @@ public class ActiveListActivity extends BaseActivity {
     }
 
 
+    /**
+     * 跳转到 新建活动界面
+     */
     public void createActivity(View view) {
         Intent intent = new Intent(this, CreateActiveActivity.class);
         startActivityForResult(intent, REQUEST_CODE);

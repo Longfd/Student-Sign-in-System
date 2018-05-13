@@ -14,10 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 咸鱼科技 通信协议
- * <p>
- * https://github.com/Longfd/Student-Sign-in-System/blob/master/%E5%92%B8%E9%B1%BC%E7%A7%91%E6%8A%80%E6%8A%A5%E6%96%87%E8%A7%84%E8%8C%83.md
- * <p>
+ * 通信协议
  * 报文格式: 包头 + 包体 + 包尾
  * 包头:
  * <p>
@@ -32,7 +29,6 @@ import java.util.concurrent.Executors;
  * <p>
  * 包尾校验(SHORT): 2 Byte(网络序or大端序) [包体内容] 单个字节累加之和
  */
-
 public class SocketManager {
     private static final String TAG = "SocketManager";
 
@@ -156,7 +152,7 @@ public class SocketManager {
                     || headType == null
                     || headLen == null
                     || !equalByteArray(headCheck, getCheckByteArray(headType, headLen))) {
-                throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
+                throw new RuntimeException("Data validation failure!");
             }
 
             int dataTotalLen = byteArrayToInt(headLen);
@@ -187,7 +183,7 @@ public class SocketManager {
 
             //check
             if (dataBytes == null || !equalByteArray(endCheck, getEndCheckByteArray(dataBytes))) {
-                throw new RuntimeException("Data validation failure!  ---by XianYU Technology Co.,Ltd");
+                throw new RuntimeException("Data validation failure!");
             }
             String receive = new String(dataBytes, UTF_8);
             Log.d(TAG, "receive: " + type + "-" + receive);

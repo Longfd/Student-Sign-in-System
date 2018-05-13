@@ -17,6 +17,9 @@ import com.xykj.studentsign.ui.base.BaseActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 学生列表界面
+ */
 public class StudentListActivity extends BaseActivity {
     public static final String DATA_CLASS_INFO = "classInfo";
     @BindView(R.id.rv_student)
@@ -26,6 +29,7 @@ public class StudentListActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化
         setContentView(R.layout.activity_student_list);
         ButterKnife.bind(this);
         setTitle("学生列表");

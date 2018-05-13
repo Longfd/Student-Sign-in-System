@@ -22,6 +22,9 @@ import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 签到列表
+ */
 public class SignListActivity extends BaseActivity {
 
     public static final String ACTIVE_ID = "activeId";
@@ -42,6 +45,7 @@ public class SignListActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化
         setContentView(R.layout.activity_sign_list);
         ButterKnife.bind(this);
         setTitle("签到详情");
@@ -86,6 +90,9 @@ public class SignListActivity extends BaseActivity {
         getData();
     }
 
+    /**
+     * 获取数据
+     */
     private void getData() {
         new Handler(getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -96,6 +103,9 @@ public class SignListActivity extends BaseActivity {
         }, 100);
     }
 
+    /**
+     * 获取签到列表
+     */
     private void getSignList() {
         mApi.getSignList(mActiveId, new Api.Callback<Result>() {
             @Override

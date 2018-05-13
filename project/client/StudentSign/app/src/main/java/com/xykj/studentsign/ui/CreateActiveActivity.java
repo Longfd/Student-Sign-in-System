@@ -25,6 +25,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 创建活动界面
+ */
 public class CreateActiveActivity extends BaseActivity {
 
 
@@ -42,6 +45,7 @@ public class CreateActiveActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化
         setContentView(R.layout.activity_create_active);
         ButterKnife.bind(this);
         setTitle("创建活动");
@@ -57,6 +61,9 @@ public class CreateActiveActivity extends BaseActivity {
         getClassList();
     }
 
+    /**
+     * 获取班级列表
+     */
     private void getClassList() {
         showProgress();
         mApi.getClassList(new Api.Callback<Result>() {
@@ -85,6 +92,9 @@ public class CreateActiveActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 创建活动
+     */
     public void createActive(View view) {
         String name = mEtName.getText().toString().trim();
         if (TextUtils.isEmpty(name)) {
@@ -125,6 +135,9 @@ public class CreateActiveActivity extends BaseActivity {
 
     }
 
+    /**
+     * 设配器
+     */
     class ClassAdapter extends RecyclerView.Adapter<ViewHolder> {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

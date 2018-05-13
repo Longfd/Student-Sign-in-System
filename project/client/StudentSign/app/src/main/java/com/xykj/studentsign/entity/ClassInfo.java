@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 班级实体类
+ */
 public class ClassInfo implements Serializable {
     @SerializedName("cls_no")
     private String classId;// 所在班级

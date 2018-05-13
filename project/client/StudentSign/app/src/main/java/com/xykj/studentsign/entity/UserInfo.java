@@ -4,13 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+/**
+ * 用户实体类
+ */
 public class UserInfo implements Serializable {
 
     public static final String ROLE_STUDENT = "0";//角色 0 学生
     public static final String ROLE_TEACHER = "1";//角色 1 教师
 
-    private String result;//
-    private String msg;
+    private String result;//请求结果
+    private String msg;//请求内容
 
     private String userName;//学号,
     private String userId;//姓名,

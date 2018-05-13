@@ -22,6 +22,9 @@ import static com.xykj.studentsign.entity.Result.RESULT_SUCCESS;
 import static com.xykj.studentsign.entity.UserInfo.ROLE_STUDENT;
 import static com.xykj.studentsign.entity.UserInfo.ROLE_TEACHER;
 
+/**
+ * 注册界面
+ */
 public class RegisterActivity extends BaseActivity {
 
     @BindView(R.id.et_no)
@@ -41,7 +44,7 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //初始化
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         setTitle("注册");
@@ -55,6 +58,9 @@ public class RegisterActivity extends BaseActivity {
         finish();
     }
 
+    /**
+     * 请求服务器 注册账号
+     */
     public void register(View view) {
         String userName = mEtName.getText().toString().trim();
         String userId = mEtNo.getText().toString().trim();

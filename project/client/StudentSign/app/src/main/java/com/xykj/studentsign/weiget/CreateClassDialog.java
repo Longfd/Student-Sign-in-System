@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import com.xykj.studentsign.R;
 
+/**
+ * 创建班级输入框
+ */
 public class CreateClassDialog extends Dialog {
 
     private OnInputListener mListener;
@@ -32,9 +35,8 @@ public class CreateClassDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化
         setContentView(R.layout.dialog_create_class);
-
-
         findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,6 +45,9 @@ public class CreateClassDialog extends Dialog {
         });
     }
 
+    /**
+     * 创建班级回调
+     */
     private void createClass() {
         String className = ((EditText) findViewById(R.id.et_class_name)).getText().toString().trim();
         if (TextUtils.isEmpty(className)) {
