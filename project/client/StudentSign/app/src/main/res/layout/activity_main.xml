@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.xykj.studentsign.ui.TeacherMainActivity">
+    tools:context="com.lxj.studentsign.ui.TeacherMainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

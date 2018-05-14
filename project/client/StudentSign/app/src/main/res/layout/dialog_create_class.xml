@@ -8,6 +8,7 @@
     <EditText
         android:id="@+id/et_class_name"
         android:layout_width="match_parent"
+        android:minWidth="200dp"
         android:layout_height="wrap_content"
         android:hint="请输入班级"/>
 
