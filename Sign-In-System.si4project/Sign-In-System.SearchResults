@@ -1,3 +1,0 @@
----- start_finger_server Matches (2 in 2 files) ----
-comm_thread.h (project\server\src) line 50 : int start_finger_server();
-main in daemon.cpp (project\server\src) : 			result = start_finger_server();
