@@ -94,7 +94,7 @@ typedef struct classInfo{
 	}
 	//std::string clsId;
 	std::string clsName;
-	std::string t_id; //´´½¨°à¼¶µÄ½ÌÊ¦ID
+	std::string t_id;
 }classInfo;
 
 typedef struct stuAndClsMap{
@@ -184,7 +184,7 @@ int insertCls(const classInfo& cls, std::string& err);
 int addClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
 //å­¦ç”ŸåŠ å…¥ç­çº§à¼¶
-int updateStuSqlOpt(int conn_no, stuAndClsMap& mapInfo, std::string& err);//²éÑ¯°à¼¶ + ¸üĞÂÑ§Éú
+int updateStuSqlOpt(int conn_no, stuAndClsMap& mapInfo, std::string& err);
 int updateStudent(stuAndClsMap& mapInfo, std::string& err);
 int joinClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
