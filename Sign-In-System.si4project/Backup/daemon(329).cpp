@@ -1,13 +1,3 @@
-/*
-文件名称: daemon.cpp
-文件说明: 创建守护进程并初始化服务
-包括: 
-	1.守护进程初始化
-	2.服务启动, 开启主监听线程
-	3.阻塞回收主线程
-*/
-
-
 #include <stdio.h>
 #include <signal.h>
 #include <fcntl.h>

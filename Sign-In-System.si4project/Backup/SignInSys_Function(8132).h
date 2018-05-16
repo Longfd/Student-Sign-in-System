@@ -1,12 +1,4 @@
 /*
-文件名称: SignInSys_Function.h
-文件说明: 签到所有请求类型定义及各类型处理函数
-包括: 
-	1. 签到请求类型定义
-	2. 各类型处理函数
-*/
-
-/*
  *Description: Interface for disposing Sign-in-System Client's Message
  *Author: 	  LongFeida
  *Date: 	  2018-05-01
@@ -18,7 +10,7 @@
 #ifndef __SignInSys_Function_H__
 #define __SignInSys_Function_H__
 
-//请求消息码定义
+//request code
 #define CLIENT_REQ_REGISTER 		 1000 //register    
 #define CLIENT_REQ_LOG_IN   		 1001 //log in 	
 									 
@@ -31,11 +23,11 @@
 #define CLIENT_REQ_QUERY_ACTIVITY	 1007 
 #define CLIENT_REQ_QUERY_SIGN		 1008
 
-//错误码定义
+//error code
 #define ERRNO_ILLEGAL_PARAM		-1000
 
 
-//JSON标签定义
+//tag
 #define RESPON_CODE "result"
 #define RESPON_MSG "msg"
 #define PERSON_ID "userId"
@@ -148,8 +140,8 @@ typedef struct ActivityReq{
 }ActivityReq;
 
 typedef struct ActivityStuInfo{
-	std::string userId;//教师号
-	std::string userName;//教师名
+	std::string userId;
+	std::string userName;
 	std::string c_id;
 	std::string c_Name;
 }ActivityStuInfo;
@@ -157,8 +149,8 @@ typedef struct ActivityStuInfo{
 typedef struct ActivitySignInfo{
 	std::string actNo;
 	std::string actName;
-	std::string userId;//学生号
-	std::string userName;//学生名
+	std::string userId;//ѧ����
+	std::string userName;//ѧ����
 	std::string c_id;
 	std::string c_Name;
 	std::string sign_status;
@@ -169,44 +161,44 @@ typedef struct ActivitySignInfo{
 
 
 /*Func*/
-//教师或学生注册
+//ע��
 int insertTeachOrStu(int conn_no, const person& person, std::string& err);
 int insertPerson(const person& person, std::string& err);
 int userRegister(CommThreadInfo* thread_info, unsigned char* data);
 
-//教师或学生登录
+//��¼
 int queryPerson(person& person, std::string& err);
 int userSignUp(CommThreadInfo* thread_info, unsigned char* data);
 
-//教师添加班级
+//���Ӱ༶
 int insertClsSqlOpt(int conn_no, const classInfo& cls, std::string& err);
 int insertCls(const classInfo& cls, std::string& err);
 int addClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
-//学生加入班级༶
+//����༶
 int updateStuSqlOpt(int conn_no, stuAndClsMap& mapInfo, std::string& err);//��ѯ�༶ + ����ѧ��
 int updateStudent(stuAndClsMap& mapInfo, std::string& err);
 int joinClassRequest(CommThreadInfo* thread_info, unsigned char* data);
 
-//教师查询班级
+//��ѯ�༶
 int queryClassInfoSqlOpt(const std::string& t_id, json& classInfoArray, std::string& err);
 int queryClassInfo(CommThreadInfo* thread_info, unsigned char* data);
 
-//教师创建活动
+//�����
 int insertActSqlOpt(int conn_no, ActivityReq& actReq, std::string& err);
 int insertActivity(ActivityReq& actReq, std::string& err);
 int addActivity(CommThreadInfo* thread_info, unsigned char* data);
 
-//学生活动签到
+//�ǩ��
 int updateSignInfoSqlOpt(int conn_no, const ActivitySignInfo& signInfo, std::string& err);
 int updateSignInfo(const ActivitySignInfo& signInfo, std::string& err);
 int stuSignIn(CommThreadInfo* thread_info, unsigned char* data);
 
-//教师查询活动
+//��ѯ�
 int queryActInfoSqlOpt(const std::string& t_id, json& actInfoArray, std::string& err);
 int queryActivity(CommThreadInfo* thread_info, unsigned char* data);
 
-//教师查询签到
+//��ѯǩ��
 int querySignInfoSqlOpt(const ActivityReq& actInfo, json& signInfoArray, std::string& err);
 int querySignInfo(CommThreadInfo* thread_info, unsigned char* data);
 

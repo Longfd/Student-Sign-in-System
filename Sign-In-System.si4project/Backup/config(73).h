@@ -1,12 +1,3 @@
-/*
-文件名称: config.h
-文件说明: 读取配置文件内容, 作为服务启动时所需参数
-包括: 
-	1.读整个配置文件配置
-	2.读配置文件中的某项配置
-	
-注:配置文件路径:server/etc/server.cfg
-*/
 
 #ifndef CONFIG_H
 #define CONFIG_H

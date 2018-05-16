@@ -1,19 +1,5 @@
-/*
-文件名称: commun.h
-文件说明: 提供常用的socket功能
-包括: 
-	1.socket连接初始化
-	2.socket连接断开
-	3.socket接收数据
-	4.socket发送数据
-	5.socket配置
-	等...
-*/
-
-
 #ifndef _COMMUN_H
 #define _COMMUN_H
-
 
 /** 功能：连接服务器
  *  输入参数：server_ip-服务器IP地址，server_port-服务器端口

@@ -1,5 +1,5 @@
 /*
-文件名称: comm_thread.h
+comm_thread.h
 文件说明: 初始化服务
 包括: 
 	1.启动监听线程
