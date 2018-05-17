@@ -19,8 +19,8 @@ import java.util.Map;
 public class Api {
     private static final String TAG = "Api";
     private static Api sInstance;
-    private static String ip = "47.92.75.34";
-    private static int port = 7000;
+    public static String ip = "47.92.75.34";
+    public static int port = 7000;
     private static int TIME_OUT = 10000;
     private final SocketManager mSocketManager;
 

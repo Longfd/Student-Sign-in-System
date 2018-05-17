@@ -159,4 +159,8 @@ public class LoginActivity extends BaseActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+    public void setting(View view) {
+        startActivity(new Intent(this, SettingActivity.class));
+    }
 }
