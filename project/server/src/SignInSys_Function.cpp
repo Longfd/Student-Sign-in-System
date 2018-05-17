@@ -1093,7 +1093,7 @@ int updateSignInfoSqlOpt(int conn_no, const ActivitySignInfo& signInfo, std::str
 
 	if (NULL == g_conn_list || conn_no < 0 || conn_no >= g_conn_count)	return -1;
 
-	sql_stmt << "UPDATE SIGNIN_TBL SET sign_date=curdate(), sign_time=curtime(), sign_status='0' WHERE act_no ="
+	sql_stmt << "UPDATE SIGNIN_TBL SET sign_date=curdate(), sign_time=curtime(), sign_status='1' WHERE act_no ="
 		<< signInfo.actNo << " and s_id = '"
 		<< signInfo.userId << "';";
 	write_debug_log("In Func[%s] : SQL:%s", funcName, sql_stmt.str().c_str());

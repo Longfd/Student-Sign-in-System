@@ -1,3 +1,12 @@
+/*
+文件名称: config.h
+文件说明: 读取配置文件内容, 作为服务启动时所需参数
+包括: 
+	1.读整个配置文件配置
+	2.读配置文件中的某项配置
+	
+注:配置文件路径:server/etc/server.cfg
+*/
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -29,11 +38,11 @@ typedef struct tagConfigParam
 int read_config(char* cfg_name);
 
 /** 功能:读配置文件中的某项
- *     输入参数: cfg_name-配置文件路径, key-参数键
- *                   value_size-值缓冲区大小
- *                       输出参数: value-参数值
- *                           返回:0-成功, <0-失败
- *                           */
+ *  输入参数: cfg_name-配置文件路径, key-参数键
+ *  value_size-值缓冲区大小
+ *  输出参数: value-参数值
+ *  返回:0-成功, <0-失败
+ **/
 int read_cfg_value(char* cfg_name, char* key,
 		char* value, int value_size);
 

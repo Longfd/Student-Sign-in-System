@@ -496,7 +496,7 @@ void* comm_thread_routine(void* arg)
 /** 功能: 启动指纹比对服务
  *     返回: 0-成功, <0-失败
  *     */
-int start_finger_server()
+int start_server()
 {
 	int result;
 	time_t t;
